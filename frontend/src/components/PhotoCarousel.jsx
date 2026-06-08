@@ -1,62 +1,89 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+const AUTOPLAY_MS = 6000;
+
+/** Full-bleed cinematic hero: crossfading slides with a slow Ken Burns drift. */
 function PhotoCarousel({ slides }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeSlide = slides[activeIndex];
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const count = slides.length;
+  const timer = useRef(null);
 
-  const slideCount = slides.length;
-  const nextSlide = () => setActiveIndex((current) => (current + 1) % slideCount);
-  const previousSlide = () =>
-    setActiveIndex((current) => (current - 1 + slideCount) % slideCount);
+  const goTo = useCallback((next) => setIndex((next + count) % count), [count]);
 
-  const formattedIndex = useMemo(
-    () => `${String(activeIndex + 1).padStart(2, "0")} / ${String(slideCount).padStart(2, "0")}`,
-    [activeIndex, slideCount],
-  );
+  useEffect(() => {
+    if (paused || count <= 1) return undefined;
+    timer.current = setTimeout(() => setIndex((i) => (i + 1) % count), AUTOPLAY_MS);
+    return () => clearTimeout(timer.current);
+  }, [index, paused, count]);
+
+  const active = slides[index];
 
   return (
-    <section className="hero-section" aria-labelledby="hero-title">
-      <div className="hero-backdrop" aria-hidden="true">
-        <img src={activeSlide.image} alt="" />
+    <section
+      className="hero"
+      aria-label="Featured photography"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="hero-stage" aria-hidden="true">
+        {slides.map((slide, i) => (
+          <div
+            key={slide.image}
+            className={`hero-slide ${i === index ? "is-active" : ""}`}
+            style={{ backgroundImage: `url(${slide.image})`, backgroundPosition: slide.position || "center" }}
+          />
+        ))}
+        <div className="hero-scrim" />
+        <div className="hero-grain" />
       </div>
 
-      <div className="hero-content">
-        <div className="hero-copy">
-          <h1 id="hero-title">{activeSlide.title}</h1>
-          <p>{activeSlide.text}</p>
-          <div className="hero-actions" aria-label="Primary actions">
+      <div className="hero-inner">
+        <div className="hero-text">
+          <span key={`k-${index}`} className="hero-kicker">{active.kicker}</span>
+          <h1 key={`t-${index}`} className="hero-title">{active.title}</h1>
+          <p key={`p-${index}`} className="hero-lede">{active.text}</p>
+          <div className="hero-actions">
             <Link className="button button-primary" to="/projects">
-              View Projects
+              View the Gallery
               <ArrowRight size={18} strokeWidth={1.7} />
             </Link>
-            <Link className="button button-secondary" to="/booking">
+            <Link className="button button-ghost" to="/booking">
               Book a Session
             </Link>
           </div>
         </div>
 
-        <div className="hero-panel" aria-label="Featured portfolio carousel">
-          <img src={activeSlide.image} alt="" />
-          <div className="hero-panel-meta">
-            <span>{formattedIndex}</span>
-            <Link to={`/projects?project=${activeSlide.projectId}`}>
-              View Story
-              <ArrowRight size={16} strokeWidth={1.7} />
-            </Link>
+        <div className="hero-foot">
+          <div className="hero-dots" role="tablist" aria-label="Choose slide">
+            {slides.map((slide, i) => (
+              <button
+                key={slide.image}
+                type="button"
+                role="tab"
+                aria-selected={i === index}
+                aria-label={`Slide ${i + 1}: ${slide.title}`}
+                className={`hero-dot ${i === index ? "is-active" : ""}`}
+                onClick={() => goTo(i)}
+              >
+                <span className="hero-dot-fill" style={{ animationDuration: `${AUTOPLAY_MS}ms` }} />
+              </button>
+            ))}
           </div>
+          <span className="hero-count">
+            <strong>{String(index + 1).padStart(2, "0")}</strong>
+            <i />
+            {String(count).padStart(2, "0")}
+          </span>
         </div>
       </div>
 
-      <div className="carousel-controls" aria-label="Hero carousel controls">
-        <button type="button" onClick={previousSlide} aria-label="Previous featured image">
-          <ArrowLeft size={18} strokeWidth={1.7} />
-        </button>
-        <button type="button" onClick={nextSlide} aria-label="Next featured image">
-          <ArrowRight size={18} strokeWidth={1.7} />
-        </button>
-      </div>
+      <span className="hero-scroll" aria-hidden="true">
+        <span>Scroll</span>
+        <i />
+      </span>
     </section>
   );
 }

@@ -1,75 +1,83 @@
-import { Aperture, ArrowRight, MapPin, ScanEye } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import Reveal from "../components/Reveal";
 import Testimonials from "../components/Testimonials";
 import { about, processSteps, studioStats } from "../data/portfolio";
 
 function AboutPage() {
   return (
     <>
-      <section className="page-hero about-hero">
-        <div className="about-hero-image">
-          <img src={about.image} alt="Izak holding a camera in the studio" />
-        </div>
-        <div className="page-hero-copy">
-          <span className="section-label">About Izak</span>
+      {/* Split hero */}
+      <section className="about-hero">
+        <Reveal className="about-hero-media" variant="zoom">
+          <img src={about.image} alt="Izak in the studio, holding a camera" />
+        </Reveal>
+        <Reveal className="about-hero-copy" variant="right">
+          <span className="section-label">About</span>
           <h1>Photography that reveals the truth in a glance, a gesture, a place.</h1>
-          <p>{about.body}</p>
-        </div>
-      </section>
-
-      <section className="section-shell about-story">
-        <div className="about-story-copy">
-          <span className="section-label">The Studio</span>
-          <h2>Quiet direction. Precise light. Images with room to breathe.</h2>
-          <p>{about.intro}</p>
-          <p>{about.location}</p>
-          <Link className="text-link" to="/booking">
+          <p>{about.lede}</p>
+          <Link className="button button-primary" to="/booking">
             Work Together
-            <ArrowRight size={16} strokeWidth={1.7} />
+            <ArrowRight size={18} strokeWidth={1.7} />
           </Link>
-        </div>
+        </Reveal>
+      </section>
 
-        <div className="principle-list">
-          <article>
-            <Aperture size={24} strokeWidth={1.6} />
-            <h3>The Process</h3>
-            <p>Direction stays calm and specific so you never have to guess what to do in front of the camera.</p>
-          </article>
-          <article>
-            <MapPin size={24} strokeWidth={1.6} />
-            <h3>The Location</h3>
-            <p>Light, background, movement, and wardrobe are planned around the story the images need to tell.</p>
-          </article>
-          <article>
-            <ScanEye size={24} strokeWidth={1.6} />
-            <h3>The Edit</h3>
-            <p>Final galleries are refined for tone, color, pacing, and practical use across print and digital.</p>
-          </article>
+      {/* Story + pull quote */}
+      <section className="section-shell about-story">
+        <Reveal className="about-story-text">
+          <span className="section-label">The Studio</span>
+          <h2 className="section-title">Quiet direction. Precise light. Images with room to breathe.</h2>
+          <p>{about.intro}</p>
+          <p>{about.body}</p>
+          <p className="about-location">{about.location}</p>
+        </Reveal>
+        <Reveal className="about-quote" variant="right" delay={120}>
+          <blockquote>“Less posing. More presence.”</blockquote>
+          <img src={about.portrait} alt="" loading="lazy" />
+          <span className="about-signature">{about.signature}</span>
+        </Reveal>
+      </section>
+
+      {/* Principles */}
+      <section className="about-principles">
+        <div className="section-shell">
+          <div className="principle-grid">
+            {about.principles.map((principle, i) => (
+              <Reveal as="article" className="principle" key={principle.title} delay={i * 90}>
+                <span className="principle-index">{String(i + 1).padStart(2, "0")}</span>
+                <h3>{principle.title}</h3>
+                <p>{principle.description}</p>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="section-shell stats-story" aria-label="Studio statistics">
-        {studioStats.map((stat) => (
-          <article key={stat.label}>
+      {/* Stats */}
+      <section className="section-shell about-stats">
+        {studioStats.map((stat, i) => (
+          <Reveal as="article" className="stat" key={stat.label} delay={i * 70}>
             <strong>{stat.value}</strong>
             <span>{stat.label}</span>
-          </article>
+          </Reveal>
         ))}
       </section>
 
-      <section className="process-band">
-        <div className="section-shell process-shell">
-          <div>
+      {/* Process */}
+      <section className="process">
+        <div className="section-shell">
+          <Reveal className="section-head">
             <span className="section-label">Working Style</span>
-            <h2>A simple path for polished, intentional work.</h2>
-          </div>
+            <h2 className="section-title">A simple path for polished, intentional work.</h2>
+          </Reveal>
           <div className="process-row">
-            {processSteps.map((step) => (
-              <article key={step.number}>
-                <span>{step.number}</span>
+            {processSteps.map((step, i) => (
+              <Reveal as="article" className="process-step" key={step.number} delay={i * 80}>
+                <span className="process-number">{step.number}</span>
                 <h3>{step.title}</h3>
                 <p>{step.description}</p>
-              </article>
+              </Reveal>
             ))}
           </div>
         </div>

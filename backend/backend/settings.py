@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -7,12 +8,16 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 ROOT_DIR = BASE_DIR.parent
 
-load_dotenv(ROOT_DIR / ".env")
+# override=True so this project's .env always wins over any machine-wide
+# DJANGO_* variables that may be set for other projects on the same system.
+load_dotenv(ROOT_DIR / ".env", override=True)
 
 
 def env_list(name: str, default: str) -> list[str]:
     value = os.getenv(name, default)
-    return [item.strip() for item in value.split(",") if item.strip()]
+    # Accept comma- and/or whitespace-separated values so a stray
+    # "a b" never collapses into a single malformed entry.
+    return [item.strip() for item in re.split(r"[,\s]+", value) if item.strip()]
 
 
 SECRET_KEY = os.getenv(

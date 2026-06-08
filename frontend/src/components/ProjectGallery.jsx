@@ -1,96 +1,57 @@
-import { ArrowRight, Download, Heart, Share2, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { portfolioCategories, projects } from "../data/portfolio";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { categories, photos } from "../data/portfolio";
 
-const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
-
-function mergeApiData(localProjects, apiProjects) {
-  if (!Array.isArray(apiProjects)) {
-    return localProjects;
-  }
-
-  const apiById = new Map(apiProjects.map((item) => [item.id, item]));
-
-  return localProjects.map((project) => ({
-    ...project,
-    ...apiById.get(project.id),
-    cover: project.cover,
-    gallery: project.gallery,
-  }));
-}
-
-function ProjectGallery({ compact = false }) {
-  const [searchParams] = useSearchParams();
-  const projectParam = searchParams.get("project");
+/**
+ * Filterable masonry gallery with a full keyboard-navigable lightbox.
+ * `limit` renders a compact preview (used on the homepage).
+ */
+function ProjectGallery({ limit }) {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [portfolioProjects, setPortfolioProjects] = useState(projects);
-  const [selectedProjectId, setSelectedProjectId] = useState(projectParam || projects[0].id);
-  const [lightboxImage, setLightboxImage] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useState(-1);
+
+  const filtered = useMemo(
+    () => (activeCategory === "All" ? photos : photos.filter((p) => p.category === activeCategory)),
+    [activeCategory],
+  );
+
+  const visible = limit ? filtered.slice(0, limit) : filtered;
+  const lightboxOpen = lightboxIndex >= 0;
+  const current = lightboxOpen ? visible[lightboxIndex] : null;
+
+  const close = useCallback(() => setLightboxIndex(-1), []);
+  const step = useCallback(
+    (dir) => setLightboxIndex((i) => (i + dir + visible.length) % visible.length),
+    [visible.length],
+  );
 
   useEffect(() => {
-    let isMounted = true;
+    if (!lightboxOpen) return undefined;
 
-    fetch(`${apiUrl}/photos/`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Unable to load portfolio metadata");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (isMounted) {
-          setPortfolioProjects(mergeApiData(projects, data.results));
-        }
-      })
-      .catch(() => {
-        if (isMounted) {
-          setPortfolioProjects(projects);
-        }
-      });
+    document.body.classList.add("lightbox-lock");
+    const onKey = (e) => {
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") step(1);
+      if (e.key === "ArrowLeft") step(-1);
+    };
+    window.addEventListener("keydown", onKey);
 
     return () => {
-      isMounted = false;
+      document.body.classList.remove("lightbox-lock");
+      window.removeEventListener("keydown", onKey);
     };
-  }, []);
-
-  useEffect(() => {
-    if (projectParam && projects.some((project) => project.id === projectParam)) {
-      setSelectedProjectId(projectParam);
-    }
-  }, [projectParam]);
-
-  const filteredProjects = useMemo(() => {
-    if (activeCategory === "All") {
-      return portfolioProjects;
-    }
-
-    return portfolioProjects.filter((project) => project.category === activeCategory);
-  }, [activeCategory, portfolioProjects]);
-
-  useEffect(() => {
-    if (!filteredProjects.some((project) => project.id === selectedProjectId)) {
-      setSelectedProjectId(filteredProjects[0]?.id || portfolioProjects[0]?.id || projects[0].id);
-    }
-  }, [filteredProjects, selectedProjectId, portfolioProjects]);
-
-  const selectedProject =
-    portfolioProjects.find((project) => project.id === selectedProjectId) ||
-    filteredProjects[0] ||
-    portfolioProjects[0];
-
-  const visibleProjects = compact ? filteredProjects.slice(0, 4) : filteredProjects;
+  }, [lightboxOpen, close, step]);
 
   return (
-    <div className="gallery-experience">
-      <div className="category-tabs" role="tablist" aria-label="Project categories">
-        {portfolioCategories.map((category) => (
+    <div className="gallery">
+      <div className="gallery-filter" role="tablist" aria-label="Filter by category">
+        {categories.map((category) => (
           <button
-            className={activeCategory === category ? "is-active" : ""}
+            key={category}
             type="button"
             role="tab"
             aria-selected={activeCategory === category}
-            key={category}
+            className={`filter-chip ${activeCategory === category ? "is-active" : ""}`}
             onClick={() => setActiveCategory(category)}
           >
             {category}
@@ -98,106 +59,53 @@ function ProjectGallery({ compact = false }) {
         ))}
       </div>
 
-      <div className="project-layout">
-        <article className="project-feature" aria-live="polite">
-          <div className="project-feature-image">
+      <div className="masonry">
+        {visible.map((photo, i) => (
+          <figure className="masonry-item" key={photo.id} style={{ aspectRatio: `${photo.w} / ${photo.h}` }}>
             <button
               type="button"
-              onClick={() => setLightboxImage(selectedProject.cover)}
-              aria-label={`Open ${selectedProject.title} cover image`}
+              className="masonry-button"
+              onClick={() => setLightboxIndex(i)}
+              aria-label={`Open ${photo.title}`}
             >
-              <img src={selectedProject.cover} alt={selectedProject.title} />
-            </button>
-          </div>
-          <div className="project-feature-copy">
-            <span>{selectedProject.category}</span>
-            <h2>{selectedProject.title}</h2>
-            <p>{selectedProject.description}</p>
-            <dl>
-              <div>
-                <dt>Location</dt>
-                <dd>{selectedProject.location}</dd>
-              </div>
-              <div>
-                <dt>Year</dt>
-                <dd>{selectedProject.year}</dd>
-              </div>
-              <div>
-                <dt>Gallery</dt>
-                <dd>{selectedProject.gallery.length} images</dd>
-              </div>
-            </dl>
-            <Link className="text-link" to="/booking">
-              Plan a Similar Session
-              <ArrowRight size={16} strokeWidth={1.7} />
-            </Link>
-          </div>
-        </article>
-
-        <div className="gallery-grid" aria-label="Project gallery">
-          {visibleProjects.map((project) => (
-            <button
-              className={`gallery-tile gallery-${project.layout} ${
-                project.id === selectedProjectId ? "is-selected" : ""
-              }`}
-              type="button"
-              key={project.id}
-              onClick={() => setSelectedProjectId(project.id)}
-            >
-              <img src={project.cover} alt={project.title} />
-              <span>
-                <small>{project.category}</small>
-                <strong>{project.title}</strong>
+              <img src={photo.src} alt={photo.title} loading="lazy" width={photo.w} height={photo.h} />
+              <span className="masonry-caption">
+                <small>{photo.category}</small>
+                <strong>{photo.title}</strong>
               </span>
             </button>
-          ))}
-        </div>
+          </figure>
+        ))}
       </div>
 
-      {!compact && (
-        <div className="story-strip" aria-label={`${selectedProject.title} image set`}>
-          {selectedProject.gallery.map((image, index) => (
-            <button
-              type="button"
-              key={`${selectedProject.id}-${image}-${index}`}
-              onClick={() => setLightboxImage(image)}
-              aria-label={`Open ${selectedProject.title} image ${index + 1}`}
-            >
-              <img src={image} alt="" />
-            </button>
-          ))}
-        </div>
-      )}
+      {lightboxOpen && current && (
+        <div className="lightbox" role="dialog" aria-modal="true" aria-label={current.title}>
+          <button type="button" className="lightbox-backdrop" aria-label="Close" onClick={close} />
 
-      {compact && (
-        <Link className="button button-secondary gallery-more" to="/projects">
-          Explore All Projects
-          <ArrowRight size={18} strokeWidth={1.7} />
-        </Link>
-      )}
+          <button type="button" className="lightbox-nav lightbox-prev" onClick={() => step(-1)} aria-label="Previous image">
+            <ArrowLeft size={22} strokeWidth={1.6} />
+          </button>
 
-      {lightboxImage && (
-        <div className="lightbox" role="dialog" aria-modal="true" aria-label="Selected project image">
-          <button
-            className="lightbox-close"
-            type="button"
-            onClick={() => setLightboxImage(null)}
-            aria-label="Close image preview"
-          >
+          <figure className="lightbox-figure">
+            <img src={current.src} alt={current.title} />
+            <figcaption>
+              <span>
+                <strong>{current.title}</strong>
+                <small>{current.location}</small>
+              </span>
+              <span className="lightbox-count">
+                {String(lightboxIndex + 1).padStart(2, "0")} / {String(visible.length).padStart(2, "0")}
+              </span>
+            </figcaption>
+          </figure>
+
+          <button type="button" className="lightbox-nav lightbox-next" onClick={() => step(1)} aria-label="Next image">
+            <ArrowRight size={22} strokeWidth={1.6} />
+          </button>
+
+          <button type="button" className="lightbox-close" onClick={close} aria-label="Close preview">
             <X size={20} strokeWidth={1.8} />
           </button>
-          <img src={lightboxImage} alt="" />
-          <div className="lightbox-actions" aria-label="Preview actions">
-            <button type="button" aria-label="Save favorite">
-              <Heart size={18} strokeWidth={1.7} />
-            </button>
-            <button type="button" aria-label="Download sample">
-              <Download size={18} strokeWidth={1.7} />
-            </button>
-            <button type="button" aria-label="Share sample">
-              <Share2 size={18} strokeWidth={1.7} />
-            </button>
-          </div>
         </div>
       )}
     </div>

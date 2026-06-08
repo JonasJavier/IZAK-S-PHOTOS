@@ -1,19 +1,21 @@
 import ProjectGallery from "../components/ProjectGallery";
+import Reveal from "../components/Reveal";
 
 function ProjectsPage() {
   return (
     <>
-      <section className="page-hero projects-hero">
-        <div className="page-hero-copy">
-          <span className="section-label">Projects</span>
-          <h1>Selected projects, dynamic galleries, and client-ready stories.</h1>
+      <section className="page-hero">
+        <Reveal className="page-hero-copy">
+          <span className="section-label">The Gallery</span>
+          <h1>A living archive of light, people, and places.</h1>
           <p>
-            Filter the work by category, select a project, and open images into a focused gallery preview.
+            Filter by portraits, editorial, weddings, or travel — then open any frame into a focused, full-screen
+            viewer. Use the arrow keys to move through the set.
           </p>
-        </div>
+        </Reveal>
       </section>
 
-      <section className="section-shell projects-page-section">
+      <section className="section-shell gallery-section">
         <ProjectGallery />
       </section>
     </>
