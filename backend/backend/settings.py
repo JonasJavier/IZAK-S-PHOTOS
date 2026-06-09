@@ -29,7 +29,13 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "on"}
 
-default_hosts = ["localhost", "127.0.0.1", ".railway.app"]
+default_hosts = [
+    "localhost",
+    "127.0.0.1",
+    ".railway.app",
+    "healthcheck.railway.app",
+]
+
 if railway_domain := os.getenv("RAILWAY_PUBLIC_DOMAIN"):
     default_hosts.append(railway_domain)
 
