@@ -10,36 +10,55 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ROOT_DIR = BASE_DIR.parent
 FRONTEND_DIST = ROOT_DIR / "frontend" / "dist"
 
-# override=True so this project's .env always wins over any machine-wide
-# DJANGO_* variables that may be set for other projects on the same system.
-load_dotenv(ROOT_DIR / ".env", override=True)
+# Load local .env values without overriding real environment variables
+# from platforms like Railway.
+load_dotenv(ROOT_DIR / ".env", override=False)
 
 
 def env_list(name: str, default: str) -> list[str]:
     value = os.getenv(name, default)
-    # Accept comma- and/or whitespace-separated values so a stray
-    # "a b" never collapses into a single malformed entry.
-    return [item.strip() for item in re.split(r"[,\s]+", value) if item.strip()]
+    return [
+        item.strip().strip('"').strip("'")
+        for item in re.split(r"[,\s]+", value)
+        if item.strip().strip('"').strip("'")
+    ]
 
 
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
     "django-insecure-local-development-key-change-me",
-)
+).strip().strip('"').strip("'")
 
-DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "on"}
+DEBUG = os.getenv("DJANGO_DEBUG", "true").lower().strip('"').strip("'") in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 
 default_hosts = [
     "localhost",
     "127.0.0.1",
     ".railway.app",
     "healthcheck.railway.app",
+    "izaksphotos.jonasjavier.dev",
 ]
 
 if railway_domain := os.getenv("RAILWAY_PUBLIC_DOMAIN"):
     default_hosts.append(railway_domain)
 
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", ",".join(default_hosts))
+
+required_hosts = [
+    ".railway.app",
+    "healthcheck.railway.app",
+    "izaksphotos.jonasjavier.dev",
+]
+
+for host in required_hosts:
+    if host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host)
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -84,6 +103,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -92,7 +112,9 @@ DATABASES = {
 }
 
 if database_url := os.getenv("DATABASE_URL"):
+    database_url = database_url.strip().strip('"').strip("'")
     DATABASES["default"] = dj_database_url.parse(database_url, conn_max_age=600)
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -109,14 +131,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "America/Santo_Domingo"
 USE_I18N = True
 USE_TZ = True
 
+
 STATIC_URL = "/static/"
 STATIC_ROOT = ROOT_DIR / "staticfiles"
 STATICFILES_DIRS = [FRONTEND_DIST] if FRONTEND_DIST.exists() else []
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -125,19 +150,14 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 CORS_ALLOWED_ORIGINS = env_list(
     "DJANGO_CORS_ALLOWED_ORIGINS",
-    "http://localhost:5173,http://127.0.0.1:5173",
+    "http://localhost:5173,http://127.0.0.1:5173,https://izaksphotos.jonasjavier.dev",
 )
-
-REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ],
-}
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.railway.app",
@@ -145,3 +165,11 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+}
