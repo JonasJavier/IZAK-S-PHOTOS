@@ -132,3 +132,10 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.railway.app",
+    "https://izaksphotos.jonasjavier.dev",
+]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
