@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { useLang } from "../i18n";
 import { services } from "../data/portfolio";
 
-const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
 // Stable (English) value used for storage/submission; label is localized.
 const referralOptions = [

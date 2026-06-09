@@ -2,11 +2,13 @@ import os
 import re
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ROOT_DIR = BASE_DIR.parent
+FRONTEND_DIST = ROOT_DIR / "frontend" / "dist"
 
 # override=True so this project's .env always wins over any machine-wide
 # DJANGO_* variables that may be set for other projects on the same system.
@@ -27,7 +29,11 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "on"}
 
-ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
+default_hosts = ["localhost", "127.0.0.1", ".railway.app"]
+if railway_domain := os.getenv("RAILWAY_PUBLIC_DOMAIN"):
+    default_hosts.append(railway_domain)
+
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", ",".join(default_hosts))
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -44,6 +50,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -57,7 +64,7 @@ ROOT_URLCONF = "backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [FRONTEND_DIST],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -77,6 +84,9 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+if database_url := os.getenv("DATABASE_URL"):
+    DATABASES["default"] = dj_database_url.parse(database_url, conn_max_age=600)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -98,7 +108,17 @@ TIME_ZONE = "America/Santo_Domingo"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = ROOT_DIR / "staticfiles"
+STATICFILES_DIRS = [FRONTEND_DIST] if FRONTEND_DIST.exists() else []
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = env_list(

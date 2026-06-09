@@ -1,20 +1,20 @@
 # Izak's Photos
 
-A full-stack photography portfolio built with Django REST Framework and React/Vite. The project is organized so the backend API and frontend client can be started together from the repository root.
+A full-stack photography portfolio built with Django REST Framework and React/Vite. Django handles the booking API and, in production, serves the compiled Vite app from the same Railway service.
 
 ## Features
 
 - Editorial photography homepage with responsive desktop and mobile layouts
 - Functional navigation for Home, Portfolio, About, Services, and Contact
-- Interactive portfolio category tabs and selected-project detail panel
+- Interactive portfolio category tabs and full-screen lightbox
 - Booking/contact form wired to a Django REST endpoint for local development
-- Project metadata served by the Django API with frontend image assets managed in React
+- Optimized gallery imagery managed as Vite assets
 
 ## Tech Stack
 
-- Backend: Django, Django REST Framework, SQLite for local development
-- Frontend: React, Vite, Bootstrap, React Bootstrap
-- Tooling: Python virtual environment, npm, unified development launcher
+- Backend: Django, Django REST Framework, SQLite locally, optional Postgres via `DATABASE_URL`
+- Frontend: React, Vite, React Router, Lucide icons
+- Production: Gunicorn, WhiteNoise, Railway/Nixpacks
 
 ## Project Structure
 
@@ -27,7 +27,8 @@ IZAK-S-PHOTOS/
 |-- frontend/             # React/Vite application
 |   `-- src/
 |-- scripts/
-|   `-- dev.py            # Starts backend and frontend together
+|   `-- dev.py            # Starts backend and frontend together locally
+|-- nixpacks.toml         # Railway build/start configuration
 |-- requirements.txt      # Python dependencies
 `-- package.json          # Root convenience scripts
 ```
@@ -122,6 +123,21 @@ Create a production build:
 npm --prefix frontend run build
 ```
 
+## Railway Deployment
+
+The repo includes `nixpacks.toml` for a single Railway service. Nixpacks installs Python and Node, builds the Vite frontend, runs `collectstatic`, migrates the database, and starts Gunicorn.
+
+Recommended Railway variables:
+
+```text
+DJANGO_DEBUG=false
+DJANGO_SECRET_KEY=<strong-secret>
+DJANGO_ALLOWED_HOSTS=<your-domain>,.railway.app
+DATABASE_URL=<railway-postgres-url>
+```
+
+`VITE_API_URL` is optional in production. If it is not set, the booking form posts to `/api` on the same domain.
+
 Preview the production build:
 
 ```powershell
@@ -136,8 +152,9 @@ The app works with development defaults, but these values can be configured with
 | --- | --- | --- | --- |
 | `DJANGO_SECRET_KEY` | `.env` | development-only key | Secret key for local Django runs |
 | `DJANGO_DEBUG` | `.env` | `true` | Enables Django debug mode |
-| `DJANGO_ALLOWED_HOSTS` | `.env` | `localhost,127.0.0.1` | Comma-separated allowed hosts |
+| `DJANGO_ALLOWED_HOSTS` | `.env` | `localhost,127.0.0.1,.railway.app` | Comma-separated allowed hosts |
 | `DJANGO_CORS_ALLOWED_ORIGINS` | `.env` | `http://localhost:5173,http://127.0.0.1:5173` | Comma-separated frontend origins |
+| `DATABASE_URL` | Railway / `.env` | unset | Optional Postgres connection URL |
 | `VITE_API_URL` | `frontend/.env` | `http://127.0.0.1:8000/api` | Frontend API base URL |
 
 ## Notes
