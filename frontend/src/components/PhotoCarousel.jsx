@@ -1,11 +1,13 @@
 import { ArrowRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useLang } from "../i18n";
 
-const AUTOPLAY_MS = 6000;
+const AUTOPLAY_MS = 6500;
 
 /** Full-bleed cinematic hero: crossfading slides with a slow Ken Burns drift. */
 function PhotoCarousel({ slides }) {
+  const { t } = useLang();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const count = slides.length;
@@ -42,46 +44,49 @@ function PhotoCarousel({ slides }) {
 
       <div className="hero-inner">
         <div className="hero-text">
-          <span key={`k-${index}`} className="hero-kicker">{active.kicker}</span>
-          <h1 key={`t-${index}`} className="hero-title">{active.title}</h1>
-          <p key={`p-${index}`} className="hero-lede">{active.text}</p>
+          <span key={`k-${index}`} className="hero-kicker">{t(active.kicker)}</span>
+          <h1 key={`t-${index}`} className="hero-title">{t(active.title)}</h1>
+          <p key={`p-${index}`} className="hero-lede">{t(active.text)}</p>
           <div className="hero-actions">
-            <Link className="button button-primary" to="/projects">
-              View the Gallery
-              <ArrowRight size={18} strokeWidth={1.7} />
+            <Link className="button button-primary button-lg" to="/projects">
+              {t({ en: "View the Gallery", es: "Ver la Galería" })}
+              <ArrowRight size={19} strokeWidth={1.7} />
             </Link>
-            <Link className="button button-ghost" to="/booking">
-              Book a Session
+            <Link className="button button-ghost button-lg" to="/booking">
+              {t({ en: "Book a Session", es: "Reservar Sesión" })}
             </Link>
           </div>
-        </div>
-
-        <div className="hero-foot">
-          <div className="hero-dots" role="tablist" aria-label="Choose slide">
-            {slides.map((slide, i) => (
-              <button
-                key={slide.image}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                aria-label={`Slide ${i + 1}: ${slide.title}`}
-                className={`hero-dot ${i === index ? "is-active" : ""}`}
-                onClick={() => goTo(i)}
-              >
-                <span className="hero-dot-fill" style={{ animationDuration: `${AUTOPLAY_MS}ms` }} />
-              </button>
-            ))}
-          </div>
-          <span className="hero-count">
-            <strong>{String(index + 1).padStart(2, "0")}</strong>
-            <i />
-            {String(count).padStart(2, "0")}
-          </span>
         </div>
       </div>
 
+      <div className="hero-foot">
+        <div className="hero-dots" role="tablist" aria-label="Choose slide">
+          {slides.map((slide, i) => (
+            <button
+              key={slide.image}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={`${i + 1}`}
+              className={`hero-dot ${i === index ? "is-active" : ""}`}
+              onClick={() => goTo(i)}
+            >
+              <span
+                className="hero-dot-fill"
+                style={{ animationDuration: paused ? "0ms" : `${AUTOPLAY_MS}ms` }}
+              />
+            </button>
+          ))}
+        </div>
+        <span className="hero-count">
+          <strong>{String(index + 1).padStart(2, "0")}</strong>
+          <i />
+          {String(count).padStart(2, "0")}
+        </span>
+      </div>
+
       <span className="hero-scroll" aria-hidden="true">
-        <span>Scroll</span>
+        <span>{t({ en: "Scroll", es: "Desliza" })}</span>
         <i />
       </span>
     </section>

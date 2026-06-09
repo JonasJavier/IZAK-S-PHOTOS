@@ -1,172 +1,286 @@
-// Optimized, web-ready photography (built from the originals via scripts/optimize_images.py)
-import editorialDark from "../images/optimized/editorial-dark.jpg";
-import editorialFur from "../images/optimized/editorial-fur.jpg";
-import editorialSuit from "../images/optimized/editorial-suit.jpg";
-import eventChampagne from "../images/optimized/event-champagne.jpg";
-import izakStudio from "../images/optimized/izak-studio.jpg";
-import lifestyleSunflowers from "../images/optimized/lifestyle-sunflowers.jpg";
-import portraitFreckles from "../images/optimized/portrait-freckles.jpg";
-import portraitGolden from "../images/optimized/portrait-golden.jpg";
-import portraitNaturalLight from "../images/optimized/portrait-natural-light.jpg";
-import portraitWarm from "../images/optimized/portrait-warm.jpg";
-import travelBlooms from "../images/optimized/travel-blooms.jpg";
-import travelCave from "../images/optimized/travel-cave.jpg";
-import travelCoast from "../images/optimized/travel-coast.jpg";
-import travelIceland from "../images/optimized/travel-iceland.jpg";
-import travelMoon from "../images/optimized/travel-moon.jpg";
-import travelStreet from "../images/optimized/travel-street.jpg";
-import weddingDunes from "../images/optimized/wedding-dunes.jpg";
-import weddingRings from "../images/optimized/wedding-rings.jpg";
+// Optimized, web-ready photography (built via scripts/optimize_images.py)
+import aboutPhotographer from "../images/optimized/about-photographer.jpg";
+import editorialCrimson from "../images/optimized/editorial-crimson.jpg";
+import editorialExposure from "../images/optimized/editorial-exposure.jpg";
+import editorialMotion from "../images/optimized/editorial-motion.jpg";
+import editorialRecord from "../images/optimized/editorial-record.jpg";
+import editorialFrequency from "../images/optimized/editorial-frequency.jpg";
+import portraitCity from "../images/optimized/portrait-city.jpg";
+import portraitLean from "../images/optimized/portrait-lean.jpg";
+import portraitShade from "../images/optimized/portrait-shade.jpg";
+import portraitSparks from "../images/optimized/portrait-sparks.jpg";
+import portraitStillness from "../images/optimized/portrait-stillness.jpg";
+import travelBloom from "../images/optimized/travel-bloom.jpg";
+import travelFestival from "../images/optimized/travel-festival.jpg";
+import travelFlamingos from "../images/optimized/travel-flamingos.jpg";
+import travelQuarter from "../images/optimized/travel-quarter.jpg";
+import travelSong from "../images/optimized/travel-song.jpg";
+import travelStars from "../images/optimized/travel-stars.jpg";
+import weddingArch from "../images/optimized/wedding-arch.jpg";
+import weddingFirstDance from "../images/optimized/wedding-firstdance.jpg";
+import weddingGolden from "../images/optimized/wedding-golden.jpg";
+import weddingJoy from "../images/optimized/wedding-joy.jpg";
+import weddingVeil from "../images/optimized/wedding-veil.jpg";
 
+// Header nav (Booking lives in the prominent "Reserve" button instead).
 export const navItems = [
-  { label: "Home", path: "/" },
-  { label: "Gallery", path: "/projects" },
-  { label: "About", path: "/about" },
-  { label: "Booking", path: "/booking" },
+  { label: { en: "Home", es: "Inicio" }, path: "/" },
+  { label: { en: "Gallery", es: "Galería" }, path: "/projects" },
+  { label: { en: "About", es: "Sobre mí" }, path: "/about" },
 ];
 
-export const categories = ["All", "Portraits", "Editorial", "Weddings", "Travel"];
+export const reserveLabel = { en: "Reserve", es: "Reservar" };
 
-// The full gallery — width/height let the layout reserve space (no layout shift).
+export const categories = [
+  { key: "All", label: { en: "All", es: "Todo" } },
+  { key: "Portraits", label: { en: "Portraits", es: "Retratos" } },
+  { key: "Editorial", label: { en: "Editorial", es: "Editorial" } },
+  { key: "Weddings", label: { en: "Weddings", es: "Bodas" } },
+  { key: "Travel", label: { en: "Travel", es: "Viajes" } },
+];
+
+// Full gallery. w/h reserve layout space (no shift). category is a stable key.
 export const photos = [
-  { id: "morning-light", src: portraitNaturalLight, w: 735, h: 894, category: "Portraits", title: "Morning Light", location: "Studio · Santo Domingo" },
-  { id: "closer", src: portraitFreckles, w: 700, h: 1083, category: "Portraits", title: "Closer", location: "Natural Light" },
-  { id: "amber", src: portraitWarm, w: 736, h: 1103, category: "Portraits", title: "Amber", location: "Available Light" },
-  { id: "last-light", src: portraitGolden, w: 954, h: 1700, category: "Portraits", title: "Last Light", location: "Golden Hour" },
-  { id: "sunflower-field", src: lifestyleSunflowers, w: 1133, h: 1700, category: "Portraits", title: "Sunflower Field", location: "Countryside" },
+  { id: "stillness", src: portraitStillness, w: 925, h: 1700, category: "Portraits", title: { en: "Stillness", es: "Quietud" }, location: { en: "Studio · B&W", es: "Estudio · B&N" } },
+  { id: "sparks", src: portraitSparks, w: 1133, h: 1700, category: "Portraits", title: { en: "Sparks", es: "Chispas" }, location: { en: "Winter Market", es: "Mercado de Invierno" } },
+  { id: "city-walk", src: portraitCity, w: 956, h: 1700, category: "Portraits", title: { en: "City Walk", es: "Caminata Urbana" }, location: { en: "Santo Domingo", es: "Santo Domingo" } },
+  { id: "shade", src: portraitShade, w: 884, h: 1700, category: "Portraits", title: { en: "Shade", es: "Sombra" }, location: { en: "Old Town", es: "Ciudad Vieja" } },
+  { id: "lean", src: portraitLean, w: 880, h: 1700, category: "Portraits", title: { en: "Lean", es: "Reposo" }, location: { en: "Side Street", es: "Callejón" } },
 
-  { id: "in-shadow", src: editorialDark, w: 1614, h: 974, category: "Editorial", title: "In Shadow", location: "Editorial Study" },
-  { id: "wild-collar", src: editorialFur, w: 957, h: 1700, category: "Editorial", title: "Wild Collar", location: "Studio Session" },
-  { id: "the-founder", src: editorialSuit, w: 1023, h: 1537, category: "Editorial", title: "The Founder", location: "Brand Campaign" },
+  { id: "red-motion", src: editorialMotion, w: 1133, h: 1700, category: "Editorial", title: { en: "Red Motion", es: "Movimiento Rojo" }, location: { en: "Dance Studio", es: "Estudio de Danza" } },
+  { id: "crimson", src: editorialCrimson, w: 1133, h: 1700, category: "Editorial", title: { en: "Crimson", es: "Carmesí" }, location: { en: "Café Editorial", es: "Editorial de Café" } },
+  { id: "off-the-record", src: editorialRecord, w: 1133, h: 1700, category: "Editorial", title: { en: "Off the Record", es: "Fuera de Registro" }, location: { en: "Studio Set", es: "Set de Estudio" } },
+  { id: "exposure", src: editorialExposure, w: 1360, h: 1700, category: "Editorial", title: { en: "Exposure", es: "Exposición" }, location: { en: "Campaign", es: "Campaña" } },
+  { id: "frequency", src: editorialFrequency, w: 1133, h: 1700, category: "Editorial", title: { en: "Frequency", es: "Frecuencia" }, location: { en: "Studio Set", es: "Set de Estudio" } },
 
-  { id: "the-promise", src: weddingRings, w: 1133, h: 1700, category: "Weddings", title: "The Promise", location: "Garden Ceremony" },
-  { id: "into-the-dunes", src: weddingDunes, w: 1133, h: 1700, category: "Weddings", title: "Into the Dunes", location: "Elopement" },
-  { id: "after-hours", src: eventChampagne, w: 1536, h: 1024, category: "Weddings", title: "After Hours", location: "Private Reception" },
+  { id: "first-dance", src: weddingFirstDance, w: 1133, h: 1700, category: "Weddings", title: { en: "First Dance", es: "Primer Baile" }, location: { en: "Evening Reception", es: "Recepción Nocturna" } },
+  { id: "the-arch", src: weddingArch, w: 1700, h: 1133, category: "Weddings", title: { en: "The Arch", es: "El Arco" }, location: { en: "Garden Ceremony", es: "Ceremonia en Jardín" } },
+  { id: "golden-hour", src: weddingGolden, w: 1133, h: 1700, category: "Weddings", title: { en: "Golden Hour", es: "Hora Dorada" }, location: { en: "Reception", es: "Recepción" } },
+  { id: "the-veil", src: weddingVeil, w: 1133, h: 1700, category: "Weddings", title: { en: "The Veil", es: "El Velo" }, location: { en: "Ceremony · B&W", es: "Ceremonia · B&N" } },
+  { id: "just-married", src: weddingJoy, w: 1133, h: 1700, category: "Weddings", title: { en: "Just Married", es: "Recién Casados" }, location: { en: "Outdoor", es: "Al Aire Libre" } },
 
-  { id: "old-town", src: travelStreet, w: 1127, h: 1700, category: "Travel", title: "Old Town", location: "Brescia, Italy" },
-  { id: "cathedral-of-light", src: travelCave, w: 1133, h: 1700, category: "Travel", title: "Cathedral of Light", location: "Gua Jomblang" },
-  { id: "geothermal", src: travelIceland, w: 1700, h: 1133, category: "Travel", title: "Geothermal", location: "Námafjall, Iceland" },
-  { id: "moonrise", src: travelMoon, w: 1360, h: 1700, category: "Travel", title: "Moonrise", location: "Open Fields" },
-  { id: "coastal-ridge", src: travelCoast, w: 1133, h: 1700, category: "Travel", title: "Coastal Ridge", location: "Pacific Coast" },
-  { id: "wildflower", src: travelBlooms, w: 1130, h: 1700, category: "Travel", title: "Wildflower", location: "Late Spring" },
+  { id: "under-the-stars", src: travelStars, w: 957, h: 1700, category: "Travel", title: { en: "Under the Stars", es: "Bajo las Estrellas" }, location: { en: "Open Country", es: "Campo Abierto" } },
+  { id: "flamingo-coast", src: travelFlamingos, w: 955, h: 1700, category: "Travel", title: { en: "Flamingo Coast", es: "Costa de Flamencos" }, location: { en: "Seaside", es: "Junto al Mar" } },
+  { id: "old-quarter", src: travelQuarter, w: 957, h: 1700, category: "Travel", title: { en: "Old Quarter", es: "Barrio Antiguo" }, location: { en: "Europe", es: "Europa" } },
+  { id: "festival-night", src: travelFestival, w: 1700, h: 1133, category: "Travel", title: { en: "Festival Night", es: "Noche de Festival" }, location: { en: "City Center", es: "Centro de la Ciudad" } },
+  { id: "street-song", src: travelSong, w: 1133, h: 1700, category: "Travel", title: { en: "Street Song", es: "Canción de Calle" }, location: { en: "B&W", es: "B&N" } },
+  { id: "bloom", src: travelBloom, w: 1700, h: 1281, category: "Travel", title: { en: "Bloom", es: "Floración" }, location: { en: "Spring", es: "Primavera" } },
 ];
 
-// A curated subset for the homepage "selected work" editorial layout.
+// Curated subset for the homepage editorial showcase (first item is the lead).
 export const featured = [
-  photos.find((p) => p.id === "in-shadow"),
-  photos.find((p) => p.id === "the-promise"),
-  photos.find((p) => p.id === "last-light"),
-  photos.find((p) => p.id === "cathedral-of-light"),
-  photos.find((p) => p.id === "the-founder"),
+  photos.find((p) => p.id === "red-motion"),
+  photos.find((p) => p.id === "first-dance"),
+  photos.find((p) => p.id === "stillness"),
+  photos.find((p) => p.id === "under-the-stars"),
+  photos.find((p) => p.id === "the-arch"),
 ];
 
 export const heroSlides = [
   {
-    kicker: "Portrait · Editorial · Travel",
-    title: "Light, held still.",
-    text: "Refined portrait, wedding, and editorial photography for people and brands who want images with atmosphere, clarity, and intention.",
-    image: editorialDark,
-    position: "center right",
+    image: portraitStillness,
+    position: "center 28%",
+    kicker: { en: "Portraiture", es: "Retrato" },
+    title: { en: "Light, held still.", es: "La luz, detenida." },
+    text: {
+      en: "Refined portrait photography for people who want images with atmosphere, clarity, and intention.",
+      es: "Fotografía de retrato refinada para quienes quieren imágenes con atmósfera, claridad e intención.",
+    },
   },
   {
-    kicker: "Weddings & Elopements",
-    title: "Stories, quietly told.",
-    text: "Documentary coverage that protects the warmth and timing of a day instead of staging it.",
-    image: weddingDunes,
-    position: "center 35%",
-  },
-  {
-    kicker: "On Location",
-    title: "Drawn to the dramatic.",
-    text: "From a beam of cave light to the last gold of an evening — the work follows the light wherever it leads.",
-    image: travelCave,
-    position: "center",
-  },
-  {
-    kicker: "Portraiture",
-    title: "Presence over poses.",
-    text: "Calm, specific direction so you never have to guess what to do in front of the camera.",
-    image: portraitGolden,
+    image: weddingFirstDance,
     position: "center 30%",
+    kicker: { en: "Weddings & Elopements", es: "Bodas y Elopements" },
+    title: { en: "Stories, quietly told.", es: "Historias contadas en voz baja." },
+    text: {
+      en: "Documentary coverage that protects the warmth and timing of a day instead of staging it.",
+      es: "Cobertura documental que protege la calidez y el ritmo del día, sin posarlo.",
+    },
+  },
+  {
+    image: editorialMotion,
+    position: "center",
+    kicker: { en: "Editorial & Movement", es: "Editorial y Movimiento" },
+    title: { en: "Made to move.", es: "Hecho para moverse." },
+    text: {
+      en: "Bold editorial work for dancers, artists, and brands that need images with real energy.",
+      es: "Trabajo editorial audaz para bailarines, artistas y marcas que necesitan imágenes con energía.",
+    },
+  },
+  {
+    image: travelFlamingos,
+    position: "center 58%",
+    kicker: { en: "On Location", es: "En Locación" },
+    title: { en: "Drawn to the light.", es: "Atraído por la luz." },
+    text: {
+      en: "From a quiet coast to the last gold of an evening — the work follows the light wherever it leads.",
+      es: "Desde una costa tranquila hasta el último oro de la tarde: el trabajo sigue la luz a donde lleve.",
+    },
   },
 ];
 
 export const studioStats = [
-  { value: "8+", label: "Years behind the camera" },
-  { value: "240", label: "Galleries delivered" },
-  { value: "48h", label: "Preview turnaround" },
-  { value: "12", label: "Countries photographed" },
+  { value: "8+", label: { en: "Years behind the camera", es: "Años tras la cámara" } },
+  { value: "240", label: { en: "Galleries delivered", es: "Galerías entregadas" } },
+  { value: "48h", label: { en: "Preview turnaround", es: "Entrega de previews" } },
+  { value: "12", label: { en: "Countries photographed", es: "Países fotografiados" } },
 ];
 
 export const services = [
   {
     number: "01",
-    title: "Portrait Session",
     price: "$650",
-    duration: "2 hours",
-    image: portraitWarm,
-    summary: "Guided portraits for artists, professionals, couples, and anyone ready for images with presence.",
-    details: ["Direction before every frame", "Natural or studio light", "Private proofing gallery"],
+    image: portraitSparks,
+    duration: { en: "2 hours", es: "2 horas" },
+    title: { en: "Portrait Session", es: "Sesión de Retrato" },
+    summary: {
+      en: "Guided portraits for artists, professionals, couples, and anyone ready for images with presence.",
+      es: "Retratos guiados para artistas, profesionales, parejas y cualquiera que busque imágenes con presencia.",
+    },
+    details: {
+      en: ["Direction before every frame", "Natural or studio light", "Private proofing gallery"],
+      es: ["Dirección en cada toma", "Luz natural o de estudio", "Galería privada de selección"],
+    },
   },
   {
     number: "02",
-    title: "Brand Editorial",
     price: "$1,250",
-    duration: "Half day",
-    image: editorialSuit,
-    summary: "Campaign-ready visuals for founders, products, press kits, launches, and personal brands.",
-    details: ["Creative treatment", "Location planning", "Usage-aware delivery"],
+    image: editorialExposure,
+    duration: { en: "Half day", es: "Medio día" },
+    title: { en: "Brand Editorial", es: "Editorial de Marca" },
+    summary: {
+      en: "Campaign-ready visuals for founders, products, press kits, launches, and personal brands.",
+      es: "Imágenes listas para campaña: fundadores, productos, press kits, lanzamientos y marcas personales.",
+    },
+    details: {
+      en: ["Creative treatment", "Location planning", "Usage-aware delivery"],
+      es: ["Tratamiento creativo", "Planeación de locación", "Entrega según uso"],
+    },
   },
   {
     number: "03",
-    title: "Wedding & Events",
     price: "$1,800",
-    duration: "Full day",
-    image: weddingRings,
-    summary: "Discreet documentary coverage that preserves tone, energy, and the moments between moments.",
-    details: ["Two-photographer option", "Low-light expertise", "Fast preview selects"],
+    image: weddingArch,
+    duration: { en: "Full day", es: "Día completo" },
+    title: { en: "Wedding & Events", es: "Bodas y Eventos" },
+    summary: {
+      en: "Discreet documentary coverage that preserves tone, energy, and the moments between moments.",
+      es: "Cobertura documental discreta que conserva el tono, la energía y los momentos entre momentos.",
+    },
+    details: {
+      en: ["Two-photographer option", "Low-light expertise", "Fast preview selects"],
+      es: ["Opción de dos fotógrafos", "Experiencia en poca luz", "Selección previa rápida"],
+    },
   },
 ];
 
 export const processSteps = [
-  { number: "01", title: "Connect", description: "We talk through the story, references, location, and what the images need to feel like." },
-  { number: "02", title: "Plan", description: "Mood, wardrobe, timing, and shot priorities become a clear production path." },
-  { number: "03", title: "Create", description: "The session stays calm and directed, leaving room for honest moments to happen." },
-  { number: "04", title: "Deliver", description: "Final images are edited with care and delivered in a polished client gallery." },
+  {
+    number: "01",
+    title: { en: "Connect", es: "Conectar" },
+    description: {
+      en: "We talk through the story, references, location, and what the images need to feel like.",
+      es: "Conversamos la historia, referencias, locación y qué deben transmitir las imágenes.",
+    },
+  },
+  {
+    number: "02",
+    title: { en: "Plan", es: "Planear" },
+    description: {
+      en: "Mood, wardrobe, timing, and shot priorities become a clear production path.",
+      es: "Mood, vestuario, tiempos y prioridades se vuelven un plan de producción claro.",
+    },
+  },
+  {
+    number: "03",
+    title: { en: "Create", es: "Crear" },
+    description: {
+      en: "The session stays calm and directed, leaving room for honest moments to happen.",
+      es: "La sesión es tranquila y dirigida, dejando espacio para momentos honestos.",
+    },
+  },
+  {
+    number: "04",
+    title: { en: "Deliver", es: "Entregar" },
+    description: {
+      en: "Final images are edited with care and delivered in a polished client gallery.",
+      es: "Las imágenes finales se editan con cuidado y se entregan en una galería pulida.",
+    },
+  },
 ];
 
 export const testimonials = [
   {
     name: "Maya L.",
-    project: "Portrait Session",
-    quote: "Izak made the whole experience feel easy and genuine. The photos are more beautiful than I imagined.",
-    image: portraitNaturalLight,
+    image: portraitSparks,
+    project: { en: "Portrait Session", es: "Sesión de Retrato" },
+    quote: {
+      en: "Izak made the whole experience feel easy and genuine. The photos are more beautiful than I imagined.",
+      es: "Izak hizo que toda la experiencia se sintiera fácil y genuina. Las fotos son más hermosas de lo que imaginé.",
+    },
   },
   {
     name: "Amanda & James",
-    project: "Wedding Day",
-    quote: "He caught the exact feeling of the evening. Nothing felt staged, but every image looks intentional.",
-    image: weddingDunes,
+    image: weddingFirstDance,
+    project: { en: "Wedding Day", es: "Día de Boda" },
+    quote: {
+      en: "He caught the exact feeling of the evening. Nothing felt staged, but every image looks intentional.",
+      es: "Capturó la sensación exacta de la noche. Nada se sintió posado, pero cada imagen se ve intencional.",
+    },
   },
   {
     name: "Elena R.",
-    project: "Brand Editorial",
-    quote: "The final gallery gave my brand the confidence and refinement I was missing.",
-    image: editorialSuit,
+    image: editorialCrimson,
+    project: { en: "Brand Editorial", es: "Editorial de Marca" },
+    quote: {
+      en: "The final gallery gave my brand the confidence and refinement I was missing.",
+      es: "La galería final le dio a mi marca la confianza y el refinamiento que me faltaban.",
+    },
   },
 ];
 
 export const about = {
-  image: izakStudio,
-  portrait: portraitFreckles,
+  image: aboutPhotographer,
+  portrait: editorialCrimson,
   signature: "Izak",
-  lede: "I photograph people, brands, and places with a quiet, intentional approach — less posing, more presence.",
-  body: "The work is built on natural light, honest connection, and a careful edit. Whether it is a personal portrait, a founder campaign, a wedding day, or a frame found halfway around the world, the goal is the same: images that feel composed without feeling manufactured.",
-  intro: "I started photographing to slow time down — to keep the gestures, light, and small in-between moments that pass too quickly to notice. A decade later, that is still the whole job.",
-  location: "Based in Santo Domingo, Dominican Republic. Available for selected travel projects worldwide.",
+  lede: {
+    en: "I photograph people, brands, and places with a quiet, intentional approach — less posing, more presence.",
+    es: "Fotografío personas, marcas y lugares con un enfoque tranquilo e intencional: menos pose, más presencia.",
+  },
+  body: {
+    en: "The work is built on natural light, honest connection, and a careful edit. Whether it is a personal portrait, a founder campaign, a wedding day, or a frame found halfway around the world, the goal is the same: images that feel composed without feeling manufactured.",
+    es: "El trabajo se construye sobre luz natural, conexión honesta y una edición cuidada. Sea un retrato personal, una campaña de marca, un día de boda o una toma encontrada al otro lado del mundo, la meta es la misma: imágenes que se sienten compuestas sin sentirse fabricadas.",
+  },
+  intro: {
+    en: "I started photographing to slow time down — to keep the gestures, light, and small in-between moments that pass too quickly to notice. A decade later, that is still the whole job.",
+    es: "Empecé a fotografiar para frenar el tiempo: conservar los gestos, la luz y los pequeños momentos intermedios que pasan demasiado rápido. Una década después, ese sigue siendo todo el trabajo.",
+  },
+  location: {
+    en: "Based in Santo Domingo, Dominican Republic. Available for selected travel projects worldwide.",
+    es: "Con base en Santo Domingo, República Dominicana. Disponible para proyectos de viaje seleccionados en todo el mundo.",
+  },
+  quote: { en: "Less posing. More presence.", es: "Menos pose. Más presencia." },
   principles: [
-    { title: "Direction", description: "Calm, specific guidance so you never have to wonder what to do in front of the camera." },
-    { title: "Light", description: "Natural light first. Background, movement, and timing are planned around the story." },
-    { title: "The Edit", description: "Galleries refined for tone, color, and pacing — built to live across print and screen." },
+    {
+      title: { en: "Direction", es: "Dirección" },
+      description: {
+        en: "Calm, specific guidance so you never have to wonder what to do in front of the camera.",
+        es: "Guía tranquila y específica para que nunca tengas que adivinar qué hacer frente a la cámara.",
+      },
+    },
+    {
+      title: { en: "Light", es: "Luz" },
+      description: {
+        en: "Natural light first. Background, movement, and timing are planned around the story.",
+        es: "Luz natural primero. Fondo, movimiento y tiempos se planean en torno a la historia.",
+      },
+    },
+    {
+      title: { en: "The Edit", es: "La Edición" },
+      description: {
+        en: "Galleries refined for tone, color, and pacing — built to live across print and screen.",
+        es: "Galerías refinadas en tono, color y ritmo, hechas para vivir en impresión y pantalla.",
+      },
+    },
   ],
 };

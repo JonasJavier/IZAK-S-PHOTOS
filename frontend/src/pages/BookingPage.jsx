@@ -1,16 +1,28 @@
 import BookingForm from "../components/BookingForm";
+import Reveal from "../components/Reveal";
+import { useLang } from "../i18n";
 
 function BookingPage() {
+  const { t } = useLang();
+
   return (
     <>
-      <section className="page-hero booking-hero">
-        <div className="page-hero-copy">
-          <span className="section-label">Reserve a Session</span>
-          <h1>Tell me what you are building, and I will shape the session around it.</h1>
+      <section className="page-hero">
+        <Reveal className="page-hero-copy">
+          <span className="section-label">{t({ en: "Reserve a Session", es: "Reserva una Sesión" })}</span>
+          <h1>
+            {t({
+              en: "Tell me what you're building, and I'll shape the session around it.",
+              es: "Cuéntame qué estás creando y daré forma a la sesión a tu alrededor.",
+            })}
+          </h1>
           <p>
-            Choose a package, share your timeline, and send a booking request. The form works locally and can connect to the Django API when the backend is running.
+            {t({
+              en: "Choose a package, share your timeline, and send a booking request. Each inquiry is saved and answered personally.",
+              es: "Elige un paquete, comparte tus fechas y envía una solicitud. Cada mensaje se guarda y se responde personalmente.",
+            })}
           </p>
-        </div>
+        </Reveal>
       </section>
 
       <section className="section-shell booking-section">

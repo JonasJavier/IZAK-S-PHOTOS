@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLang } from "../i18n";
 import { categories, photos } from "../data/portfolio";
 
 /**
@@ -7,6 +8,7 @@ import { categories, photos } from "../data/portfolio";
  * `limit` renders a compact preview (used on the homepage).
  */
 function ProjectGallery({ limit }) {
+  const { t } = useLang();
   const [activeCategory, setActiveCategory] = useState("All");
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
@@ -27,7 +29,6 @@ function ProjectGallery({ limit }) {
 
   useEffect(() => {
     if (!lightboxOpen) return undefined;
-
     document.body.classList.add("lightbox-lock");
     const onKey = (e) => {
       if (e.key === "Escape") close();
@@ -35,26 +36,28 @@ function ProjectGallery({ limit }) {
       if (e.key === "ArrowLeft") step(-1);
     };
     window.addEventListener("keydown", onKey);
-
     return () => {
       document.body.classList.remove("lightbox-lock");
       window.removeEventListener("keydown", onKey);
     };
   }, [lightboxOpen, close, step]);
 
+  // Reset lightbox when the filter changes underneath it.
+  useEffect(() => setLightboxIndex(-1), [activeCategory]);
+
   return (
     <div className="gallery">
       <div className="gallery-filter" role="tablist" aria-label="Filter by category">
         {categories.map((category) => (
           <button
-            key={category}
+            key={category.key}
             type="button"
             role="tab"
-            aria-selected={activeCategory === category}
-            className={`filter-chip ${activeCategory === category ? "is-active" : ""}`}
-            onClick={() => setActiveCategory(category)}
+            aria-selected={activeCategory === category.key}
+            className={`filter-chip ${activeCategory === category.key ? "is-active" : ""}`}
+            onClick={() => setActiveCategory(category.key)}
           >
-            {category}
+            {t(category.label)}
           </button>
         ))}
       </div>
@@ -66,12 +69,12 @@ function ProjectGallery({ limit }) {
               type="button"
               className="masonry-button"
               onClick={() => setLightboxIndex(i)}
-              aria-label={`Open ${photo.title}`}
+              aria-label={t(photo.title)}
             >
-              <img src={photo.src} alt={photo.title} loading="lazy" width={photo.w} height={photo.h} />
+              <img src={photo.src} alt={t(photo.title)} loading="lazy" width={photo.w} height={photo.h} />
               <span className="masonry-caption">
-                <small>{photo.category}</small>
-                <strong>{photo.title}</strong>
+                <small>{t(photo.location)}</small>
+                <strong>{t(photo.title)}</strong>
               </span>
             </button>
           </figure>
@@ -79,19 +82,19 @@ function ProjectGallery({ limit }) {
       </div>
 
       {lightboxOpen && current && (
-        <div className="lightbox" role="dialog" aria-modal="true" aria-label={current.title}>
+        <div className="lightbox" role="dialog" aria-modal="true" aria-label={t(current.title)}>
           <button type="button" className="lightbox-backdrop" aria-label="Close" onClick={close} />
 
-          <button type="button" className="lightbox-nav lightbox-prev" onClick={() => step(-1)} aria-label="Previous image">
+          <button type="button" className="lightbox-nav lightbox-prev" onClick={() => step(-1)} aria-label="Previous">
             <ArrowLeft size={22} strokeWidth={1.6} />
           </button>
 
           <figure className="lightbox-figure">
-            <img src={current.src} alt={current.title} />
+            <img src={current.src} alt={t(current.title)} />
             <figcaption>
               <span>
-                <strong>{current.title}</strong>
-                <small>{current.location}</small>
+                <strong>{t(current.title)}</strong>
+                <small>{t(current.location)}</small>
               </span>
               <span className="lightbox-count">
                 {String(lightboxIndex + 1).padStart(2, "0")} / {String(visible.length).padStart(2, "0")}
@@ -99,11 +102,11 @@ function ProjectGallery({ limit }) {
             </figcaption>
           </figure>
 
-          <button type="button" className="lightbox-nav lightbox-next" onClick={() => step(1)} aria-label="Next image">
+          <button type="button" className="lightbox-nav lightbox-next" onClick={() => step(1)} aria-label="Next">
             <ArrowRight size={22} strokeWidth={1.6} />
           </button>
 
-          <button type="button" className="lightbox-close" onClick={close} aria-label="Close preview">
+          <button type="button" className="lightbox-close" onClick={close} aria-label="Close">
             <X size={20} strokeWidth={1.8} />
           </button>
         </div>

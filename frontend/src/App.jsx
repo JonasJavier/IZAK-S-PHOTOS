@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
+import LanguageToggle from "./components/LanguageToggle";
 import Navbar from "./components/Navbar";
+import { LanguageProvider } from "./i18n";
 import AboutPage from "./pages/AboutPage";
 import BookingPage from "./pages/BookingPage";
 import HomePage from "./pages/HomePage";
@@ -32,15 +34,18 @@ function AppShell() {
         </Routes>
       </main>
       <Footer />
+      <LanguageToggle />
     </>
   );
 }
 
 function App() {
   return (
-    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
-      <AppShell />
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+        <AppShell />
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }
 

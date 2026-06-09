@@ -1,14 +1,23 @@
 import { CalendarCheck, Check, Mail, MapPin } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useLang } from "../i18n";
 import { services } from "../data/portfolio";
 
 const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+
+// Stable (English) value used for storage/submission; label is localized.
+const referralOptions = [
+  { value: "Instagram", label: { en: "Instagram", es: "Instagram" } },
+  { value: "Referral", label: { en: "Referral", es: "Recomendación" } },
+  { value: "Google", label: { en: "Google", es: "Google" } },
+  { value: "Event", label: { en: "Event", es: "Evento" } },
+];
 
 const initialForm = {
   name: "",
   email: "",
   phone: "",
-  projectType: services[0].title,
+  projectType: services[0].title.en,
   date: "",
   location: "",
   referral: "Instagram",
@@ -16,11 +25,12 @@ const initialForm = {
 };
 
 function BookingForm() {
+  const { t } = useLang();
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState("idle");
 
   const selectedService = useMemo(
-    () => services.find((service) => service.title === form.projectType) || services[0],
+    () => services.find((s) => s.title.en === form.projectType) || services[0],
     [form.projectType],
   );
 
@@ -29,50 +39,46 @@ function BookingForm() {
     setForm((current) => ({ ...current, [name]: value }));
   };
 
-  const handlePackageSelect = (title) => {
-    setForm((current) => ({ ...current, projectType: title }));
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setStatus("submitting");
-
     try {
       const response = await fetch(`${apiUrl}/contact/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
-      if (!response.ok) {
-        throw new Error("Unable to send inquiry");
+      if (response.ok) {
+        setStatus("success");
+        setForm((current) => ({ ...initialForm, projectType: current.projectType }));
+      } else if (response.status === 400) {
+        setStatus("invalid");
+      } else {
+        setStatus("error");
       }
-
-      setStatus("success");
     } catch {
-      setStatus("offline-success");
+      setStatus("offline");
     }
   };
 
-  const isConfirmed = status === "success" || status === "offline-success";
+  const isConfirmed = status === "success";
+  const submitting = status === "submitting";
 
   return (
     <div className="booking-experience">
-      <section className="package-column" aria-label="Session packages">
-        <span className="section-label">Choose a Package</span>
+      <section className="package-column" aria-label="Packages">
+        <span className="section-label">{t({ en: "Choose a Package", es: "Elige un Paquete" })}</span>
         <div className="package-list">
           {services.map((service) => (
             <button
-              className={service.title === form.projectType ? "is-selected" : ""}
+              className={service.title.en === form.projectType ? "is-selected" : ""}
               type="button"
-              key={service.title}
-              onClick={() => handlePackageSelect(service.title)}
+              key={service.number}
+              onClick={() => setForm((c) => ({ ...c, projectType: service.title.en }))}
             >
               <span>
-                <strong>{service.title}</strong>
-                <small>{service.duration}</small>
+                <strong>{t(service.title)}</strong>
+                <small>{t(service.duration)}</small>
               </span>
               <em>{service.price}</em>
             </button>
@@ -80,102 +86,123 @@ function BookingForm() {
         </div>
         <div className="booking-note">
           <CalendarCheck size={18} strokeWidth={1.7} />
-          <p>Sessions are usually available Tuesday through Saturday. A 30% retainer secures your date.</p>
+          <p>
+            {t({
+              en: "Sessions are usually available Tuesday through Saturday. A 30% retainer secures your date.",
+              es: "Las sesiones suelen estar disponibles de martes a sábado. Un anticipo del 30% asegura tu fecha.",
+            })}
+          </p>
         </div>
       </section>
 
       <form className="booking-form" onSubmit={handleSubmit}>
-        <span className="section-label">Session Details</span>
+        <span className="section-label">{t({ en: "Session Details", es: "Detalles de la Sesión" })}</span>
         <label>
-          Full Name
+          {t({ en: "Full Name", es: "Nombre Completo" })}
           <input name="name" value={form.name} onChange={handleChange} placeholder="Alex Morgan" required />
         </label>
         <label>
-          Email
-          <input
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="alex@example.com"
-            required
-          />
+          {t({ en: "Email", es: "Correo" })}
+          <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="alex@example.com" required />
         </label>
         <label>
-          Phone
-          <input name="phone" value={form.phone} onChange={handleChange} placeholder="(555) 123-4567" />
+          {t({ en: "Phone", es: "Teléfono" })}
+          <input name="phone" value={form.phone} onChange={handleChange} placeholder="+1 (809) 123-4567" />
         </label>
         <label>
-          Session Type
+          {t({ en: "Session Type", es: "Tipo de Sesión" })}
           <select name="projectType" value={form.projectType} onChange={handleChange}>
             {services.map((service) => (
-              <option value={service.title} key={service.title}>
-                {service.title}
+              <option value={service.title.en} key={service.number}>
+                {t(service.title)}
               </option>
             ))}
           </select>
         </label>
         <label>
-          Preferred Date
+          {t({ en: "Preferred Date", es: "Fecha Preferida" })}
           <input
             name="date"
             value={form.date}
             onChange={handleChange}
-            placeholder="July 15, 2026 or flexible"
+            placeholder={t({ en: "July 15, 2026 or flexible", es: "15 de julio, 2026 o flexible" })}
           />
         </label>
         <label>
-          Location
+          {t({ en: "Location", es: "Ubicación" })}
           <input name="location" value={form.location} onChange={handleChange} placeholder="Santo Domingo" />
         </label>
         <label>
-          How did you hear about me?
+          {t({ en: "How did you hear about me?", es: "¿Cómo me encontraste?" })}
           <select name="referral" value={form.referral} onChange={handleChange}>
-            <option>Instagram</option>
-            <option>Referral</option>
-            <option>Google</option>
-            <option>Event</option>
+            {referralOptions.map((option) => (
+              <option value={option.value} key={option.value}>
+                {t(option.label)}
+              </option>
+            ))}
           </select>
         </label>
         <label className="form-wide">
-          Tell me about your session
+          {t({ en: "Tell me about your session", es: "Cuéntame sobre tu sesión" })}
           <textarea
             name="message"
             value={form.message}
             onChange={handleChange}
-            placeholder="Tell me about your vision, timeline, mood, people, and any references..."
+            placeholder={t({
+              en: "Share your vision, timeline, mood, people, and any references...",
+              es: "Comparte tu visión, fechas, mood, personas y cualquier referencia...",
+            })}
             rows="5"
             required
           />
         </label>
-        <button className="button button-primary form-wide" type="submit" disabled={status === "submitting"}>
-          {status === "submitting" ? "Sending..." : "Review & Confirm"}
+        <button className="button button-primary form-wide" type="submit" disabled={submitting}>
+          {submitting ? t({ en: "Sending...", es: "Enviando..." }) : t({ en: "Send Booking Request", es: "Enviar Solicitud" })}
         </button>
+
+        {status === "invalid" && (
+          <p className="form-status error form-wide">
+            {t({ en: "Please check your name and email, then try again.", es: "Revisa tu nombre y correo, e intenta de nuevo." })}
+          </p>
+        )}
+        {status === "error" && (
+          <p className="form-status error form-wide">
+            {t({ en: "Something went wrong. Please try again in a moment.", es: "Algo salió mal. Inténtalo de nuevo en un momento." })}
+          </p>
+        )}
+        {status === "offline" && (
+          <p className="form-status error form-wide">
+            {t({
+              en: "Couldn't reach the server. Start the backend, or email hello@izaksphotos.com.",
+              es: "No se pudo contactar el servidor. Inicia el backend o escribe a hello@izaksphotos.com.",
+            })}
+          </p>
+        )}
       </form>
 
       <aside className={`confirmation-panel ${isConfirmed ? "is-confirmed" : ""}`} aria-live="polite">
         <div className="confirmation-icon" aria-hidden="true">
-          {isConfirmed ? <Check size={36} strokeWidth={1.6} /> : <CalendarCheck size={32} strokeWidth={1.6} />}
+          {isConfirmed ? <Check size={34} strokeWidth={1.6} /> : <CalendarCheck size={30} strokeWidth={1.6} />}
         </div>
-        <span className="section-label">Confirmation Preview</span>
-        <h2>{isConfirmed ? "You're all set." : "Ready when you are."}</h2>
+        <span className="section-label">{t({ en: "Confirmation", es: "Confirmación" })}</span>
+        <h2>{isConfirmed ? t({ en: "You're all set.", es: "¡Listo!" }) : t({ en: "Ready when you are.", es: "Cuando quieras." })}</h2>
         <p>
           {isConfirmed
-            ? "Your booking request is saved for follow-up."
-            : "Choose a package, share a few details, and I will reply with availability."}
+            ? t({ en: "Your request is saved. I'll reply with availability shortly.", es: "Tu solicitud quedó guardada. Te responderé con disponibilidad pronto." })
+            : t({ en: "Choose a package, share a few details, and I'll reply with availability.", es: "Elige un paquete, comparte algunos detalles y te responderé con disponibilidad." })}
         </p>
         <dl>
           <div>
-            <dt>Session</dt>
-            <dd>{selectedService.title}</dd>
+            <dt>{t({ en: "Session", es: "Sesión" })}</dt>
+            <dd>{t(selectedService.title)}</dd>
           </div>
           <div>
-            <dt>Starting At</dt>
+            <dt>{t({ en: "Starting at", es: "Desde" })}</dt>
             <dd>{selectedService.price}</dd>
           </div>
           <div>
-            <dt>Date</dt>
-            <dd>{form.date || "Flexible"}</dd>
+            <dt>{t({ en: "Date", es: "Fecha" })}</dt>
+            <dd>{form.date || t({ en: "Flexible", es: "Flexible" })}</dd>
           </div>
         </dl>
         <div className="confirmation-contact">
@@ -188,9 +215,9 @@ function BookingForm() {
             {form.location || "Santo Domingo"}
           </span>
         </div>
-        {status === "offline-success" && (
+        {isConfirmed && (
           <p className="form-status success">
-            Local preview confirmed. Start the backend to send this to the API.
+            {t({ en: "Saved to the studio inbox.", es: "Guardado en la bandeja del estudio." })}
           </p>
         )}
       </aside>
