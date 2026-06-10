@@ -35,7 +35,11 @@ function PhotoCarousel({ slides }) {
           <div
             key={slide.image}
             className={`hero-slide ${i === index ? "is-active" : ""}`}
-            style={{ backgroundImage: `url(${slide.image})`, backgroundPosition: slide.position || "center" }}
+            style={{
+              backgroundImage: `url(${slide.image})`,
+              "--hero-pos": slide.position || "center",
+              "--hero-pos-mobile": slide.positionMobile || slide.position || "center",
+            }}
           />
         ))}
         <div className="hero-scrim" />

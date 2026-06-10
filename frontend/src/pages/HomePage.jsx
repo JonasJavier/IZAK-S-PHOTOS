@@ -55,7 +55,7 @@ function HomePage() {
           <p>
             {t({
               en: "A short edit across portraits, weddings, editorial, and travel. The full gallery filters by category and opens every frame in a focused viewer.",
-              es: "Una breve selección de retratos, bodas, editorial y viajes. La galería completa filtra por categoría y abre cada imagen en un visor enfocado.",
+              es: "Una breve selección de retratos, bodas, editorial y viajes. La galería completa filtra por categoría y abre cada imagen en un visor a pantalla completa.",
             })}
           </p>
         </Reveal>
@@ -77,7 +77,7 @@ function HomePage() {
             <div>
               <span className="section-label">{t({ en: "Services", es: "Servicios" })}</span>
               <h2 className="section-title">
-                {t({ en: "Built for the way your images need to work.", es: "Pensado para cómo tus imágenes deben funcionar." })}
+                {t({ en: "Built for the way your images need to work.", es: "Pensado para lo que tus imágenes necesitan lograr." })}
               </h2>
             </div>
             <p>
@@ -156,7 +156,7 @@ function HomePage() {
             <p>
               {t({
                 en: "Share the shape of your project and receive availability, guidance, and a clear next step.",
-                es: "Cuéntame la forma de tu proyecto y recibe disponibilidad, orientación y un siguiente paso claro.",
+                es: "Cuéntame de qué trata tu proyecto y te respondo con disponibilidad, orientación y un siguiente paso claro.",
               })}
             </p>
           </Reveal>

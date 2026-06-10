@@ -13,7 +13,7 @@ function BookingPage() {
           <h1>
             {t({
               en: "Tell me what you're building, and I'll shape the session around it.",
-              es: "Cuéntame qué estás creando y daré forma a la sesión a tu alrededor.",
+              es: "Cuéntame qué tienes en mente y armo la sesión a tu medida.",
             })}
           </h1>
           <p>

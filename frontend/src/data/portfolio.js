@@ -65,7 +65,7 @@ export const categories = [
 
 // Full gallery. w/h reserve layout space (no shift). category is a stable key.
 export const photos = [
-  { id: "stillness", src: portraitStillness, w: 925, h: 1700, category: "Portraits", title: { en: "Stillness", es: "Quietud" }, location: { en: "Studio ? B&W", es: "Estudio ? B&N" } },
+  { id: "stillness", src: portraitStillness, w: 925, h: 1700, category: "Portraits", title: { en: "Stillness", es: "Quietud" }, location: { en: "Studio · B&W", es: "Estudio · B&N" } },
   { id: "soft-gaze", src: portraitSoftGaze, w: 735, h: 894, category: "Portraits", title: { en: "Soft Gaze", es: "Mirada Suave" }, location: { en: "Natural Light", es: "Luz Natural" } },
   { id: "freckles", src: portraitFreckles, w: 700, h: 1083, category: "Portraits", title: { en: "Freckles", es: "Pecas" }, location: { en: "Close Portrait", es: "Retrato Cercano" } },
   { id: "ember", src: portraitEmber, w: 736, h: 1103, category: "Portraits", title: { en: "Ember", es: "Brasa" }, location: { en: "Low Light", es: "Poca Luz" } },
@@ -76,13 +76,13 @@ export const photos = [
   { id: "city-walk", src: portraitCity, w: 956, h: 1700, category: "Portraits", title: { en: "City Walk", es: "Caminata Urbana" }, location: { en: "Santo Domingo", es: "Santo Domingo" } },
   { id: "market-color", src: portraitMarket, w: 986, h: 1700, category: "Portraits", title: { en: "Market Color", es: "Color de Mercado" }, location: { en: "Street Portrait", es: "Retrato de Calle" } },
   { id: "shade", src: portraitShade, w: 884, h: 1700, category: "Portraits", title: { en: "Shade", es: "Sombra" }, location: { en: "Old Town", es: "Ciudad Vieja" } },
-  { id: "lean", src: portraitLean, w: 880, h: 1700, category: "Portraits", title: { en: "Lean", es: "Reposo" }, location: { en: "Side Street", es: "Callej?n" } },
+  { id: "lean", src: portraitLean, w: 880, h: 1700, category: "Portraits", title: { en: "Lean", es: "Reposo" }, location: { en: "Side Street", es: "Callejón" } },
 
   { id: "red-motion", src: editorialMotion, w: 1133, h: 1700, category: "Editorial", title: { en: "Red Motion", es: "Movimiento Rojo" }, location: { en: "Dance Studio", es: "Estudio de Danza" } },
-  { id: "crimson", src: editorialCrimson, w: 1133, h: 1700, category: "Editorial", title: { en: "Crimson", es: "Carmes?" }, location: { en: "Caf? Editorial", es: "Editorial de Caf?" } },
+  { id: "crimson", src: editorialCrimson, w: 1133, h: 1700, category: "Editorial", title: { en: "Crimson", es: "Carmesí" }, location: { en: "Café Editorial", es: "Editorial de Café" } },
   { id: "nocturne", src: editorialNocturne, w: 1133, h: 1700, category: "Editorial", title: { en: "Nocturne", es: "Nocturno" }, location: { en: "Evening Set", es: "Set Nocturno" } },
   { id: "off-the-record", src: editorialRecord, w: 1133, h: 1700, category: "Editorial", title: { en: "Off the Record", es: "Fuera de Registro" }, location: { en: "Studio Set", es: "Set de Estudio" } },
-  { id: "exposure", src: editorialExposure, w: 1360, h: 1700, category: "Editorial", title: { en: "Exposure", es: "Exposici?n" }, location: { en: "Campaign", es: "Campa?a" } },
+  { id: "exposure", src: editorialExposure, w: 1360, h: 1700, category: "Editorial", title: { en: "Exposure", es: "Exposición" }, location: { en: "Campaign", es: "Campaña" } },
   { id: "frequency", src: editorialFrequency, w: 1133, h: 1700, category: "Editorial", title: { en: "Frequency", es: "Frecuencia" }, location: { en: "Studio Set", es: "Set de Estudio" } },
   { id: "newsprint", src: editorialNewsprint, w: 1133, h: 1700, category: "Editorial", title: { en: "Newsprint", es: "Papel Prensa" }, location: { en: "City Steps", es: "Escaleras Urbanas" } },
   { id: "made-in-spain", src: editorialMadeInSpain, w: 1360, h: 1700, category: "Editorial", title: { en: "Made in Spain", es: "Made in Spain" }, location: { en: "Studio", es: "Estudio" } },
@@ -90,13 +90,13 @@ export const photos = [
   { id: "cover-story", src: editorialCoverStory, w: 1133, h: 1700, category: "Editorial", title: { en: "Cover Story", es: "Historia de Portada" }, location: { en: "Product Editorial", es: "Editorial de Producto" } },
   { id: "swim-light", src: editorialSwimLight, w: 956, h: 1700, category: "Editorial", title: { en: "Swim Light", es: "Luz Sumergida" }, location: { en: "Water Study", es: "Estudio en Agua" } },
 
-  { id: "first-dance", src: weddingFirstDance, w: 1133, h: 1700, category: "Weddings", title: { en: "First Dance", es: "Primer Baile" }, location: { en: "Evening Reception", es: "Recepci?n Nocturna" } },
-  { id: "the-arch", src: weddingArch, w: 1700, h: 1133, category: "Weddings", title: { en: "The Arch", es: "El Arco" }, location: { en: "Garden Ceremony", es: "Ceremonia en Jard?n" } },
-  { id: "golden-hour", src: weddingGolden, w: 1133, h: 1700, category: "Weddings", title: { en: "Golden Hour", es: "Hora Dorada" }, location: { en: "Reception", es: "Recepci?n" } },
-  { id: "the-veil", src: weddingVeil, w: 1133, h: 1700, category: "Weddings", title: { en: "The Veil", es: "El Velo" }, location: { en: "Ceremony ? B&W", es: "Ceremonia ? B&N" } },
-  { id: "just-married", src: weddingJoy, w: 1133, h: 1700, category: "Weddings", title: { en: "Just Married", es: "Reci?n Casados" }, location: { en: "Outdoor", es: "Al Aire Libre" } },
+  { id: "first-dance", src: weddingFirstDance, w: 1133, h: 1700, category: "Weddings", title: { en: "First Dance", es: "Primer Baile" }, location: { en: "Evening Reception", es: "Recepción Nocturna" } },
+  { id: "the-arch", src: weddingArch, w: 1700, h: 1133, category: "Weddings", title: { en: "The Arch", es: "El Arco" }, location: { en: "Garden Ceremony", es: "Ceremonia en Jardín" } },
+  { id: "golden-hour", src: weddingGolden, w: 1133, h: 1700, category: "Weddings", title: { en: "Golden Hour", es: "Hora Dorada" }, location: { en: "Reception", es: "Recepción" } },
+  { id: "the-veil", src: weddingVeil, w: 1133, h: 1700, category: "Weddings", title: { en: "The Veil", es: "El Velo" }, location: { en: "Ceremony · B&W", es: "Ceremonia · B&N" } },
+  { id: "just-married", src: weddingJoy, w: 1133, h: 1700, category: "Weddings", title: { en: "Just Married", es: "Recién Casados" }, location: { en: "Outdoor", es: "Al Aire Libre" } },
   { id: "vows", src: weddingVows, w: 1133, h: 1700, category: "Weddings", title: { en: "Vows", es: "Votos" }, location: { en: "Indoor Ceremony", es: "Ceremonia Interior" } },
-  { id: "sunlit-walk", src: weddingSunlitWalk, w: 1700, h: 1133, category: "Weddings", title: { en: "Sunlit Walk", es: "Camino de Sol" }, location: { en: "Vineyard", es: "Vi?edo" } },
+  { id: "sunlit-walk", src: weddingSunlitWalk, w: 1700, h: 1133, category: "Weddings", title: { en: "Sunlit Walk", es: "Camino de Sol" }, location: { en: "Vineyard", es: "Viñedo" } },
   { id: "firelight", src: weddingFirelight, w: 1700, h: 1133, category: "Weddings", title: { en: "Firelight", es: "Luz de Fuego" }, location: { en: "Night Portrait", es: "Retrato Nocturno" } },
   { id: "bouquet", src: weddingBouquet, w: 1133, h: 1700, category: "Weddings", title: { en: "Bouquet", es: "Ramo" }, location: { en: "Details", es: "Detalles" } },
 
@@ -104,14 +104,14 @@ export const photos = [
   { id: "flamingo-coast", src: travelFlamingos, w: 955, h: 1700, category: "Travel", title: { en: "Flamingo Coast", es: "Costa de Flamencos" }, location: { en: "Seaside", es: "Junto al Mar" } },
   { id: "old-quarter", src: travelQuarter, w: 957, h: 1700, category: "Travel", title: { en: "Old Quarter", es: "Barrio Antiguo" }, location: { en: "Europe", es: "Europa" } },
   { id: "festival-night", src: travelFestival, w: 1700, h: 1133, category: "Travel", title: { en: "Festival Night", es: "Noche de Festival" }, location: { en: "City Center", es: "Centro de la Ciudad" } },
-  { id: "street-song", src: travelSong, w: 1133, h: 1700, category: "Travel", title: { en: "Street Song", es: "Canci?n de Calle" }, location: { en: "B&W", es: "B&N" } },
-  { id: "bloom", src: travelBloom, w: 1700, h: 1281, category: "Travel", title: { en: "Bloom", es: "Floraci?n" }, location: { en: "Spring", es: "Primavera" } },
+  { id: "street-song", src: travelSong, w: 1133, h: 1700, category: "Travel", title: { en: "Street Song", es: "Canción de Calle" }, location: { en: "B&W", es: "B&N" } },
+  { id: "bloom", src: travelBloom, w: 1700, h: 1281, category: "Travel", title: { en: "Bloom", es: "Floración" }, location: { en: "Spring", es: "Primavera" } },
   { id: "crowd", src: travelCrowd, w: 1700, h: 1133, category: "Travel", title: { en: "Crowd", es: "Multitud" }, location: { en: "Street Festival", es: "Festival Callejero" } },
-  { id: "highlands", src: travelHighlands, w: 1700, h: 1133, category: "Travel", title: { en: "Highlands", es: "Tierras Altas" }, location: { en: "Mountain Air", es: "Aire de Monta?a" } },
+  { id: "highlands", src: travelHighlands, w: 1700, h: 1133, category: "Travel", title: { en: "Highlands", es: "Tierras Altas" }, location: { en: "Mountain Air", es: "Aire de Montaña" } },
   { id: "hillside", src: travelHillside, w: 1133, h: 1700, category: "Travel", title: { en: "Hillside", es: "Ladera" }, location: { en: "Golden Terrain", es: "Terreno Dorado" } },
   { id: "waterfall", src: travelWaterfall, w: 1360, h: 1700, category: "Travel", title: { en: "Waterfall", es: "Cascada" }, location: { en: "Cavern Light", es: "Luz de Caverna" } },
   { id: "rome-street", src: travelRomeStreet, w: 1127, h: 1700, category: "Travel", title: { en: "Rome Street", es: "Calle de Roma" }, location: { en: "Old City", es: "Ciudad Antigua" } },
-  { id: "black-sand", src: travelBlackSand, w: 1133, h: 1700, category: "Travel", title: { en: "Black Sand", es: "Arena Negra" }, location: { en: "Coast ? B&W", es: "Costa ? B&N" } },
+  { id: "black-sand", src: travelBlackSand, w: 1133, h: 1700, category: "Travel", title: { en: "Black Sand", es: "Arena Negra" }, location: { en: "Coast · B&W", es: "Costa · B&N" } },
 ];
 
 // Curated subset for the homepage editorial showcase (first item is the lead).
@@ -127,36 +127,40 @@ export const heroSlides = [
   {
     image: heroPortrait,
     position: "center center",
+    positionMobile: "72% center",
     kicker: { en: "Portraiture", es: "Retrato" },
     title: { en: "Portraits in quiet light.", es: "Retratos en luz tranquila." },
     text: {
       en: "Refined portrait photography for people who want images with atmosphere, clarity, and intention.",
-      es: "Fotograf?a de retrato refinada para quienes quieren im?genes con atm?sfera, claridad e intenci?n.",
+      es: "Fotografía de retrato cuidada, para quienes buscan imágenes con atmósfera, claridad e intención.",
     },
   },
   {
     image: weddingFirstDance,
-    position: "center 30%",
+    position: "center 42%",
+    positionMobile: "center 30%",
     kicker: { en: "Weddings & Elopements", es: "Bodas y Elopements" },
     title: { en: "Stories, quietly told.", es: "Historias contadas en voz baja." },
     text: {
       en: "Documentary coverage that protects the warmth and timing of a day instead of staging it.",
-      es: "Cobertura documental que protege la calidez y el ritmo del día, sin posarlo.",
+      es: "Cobertura documental que cuida la calidez y el ritmo del día, sin forzar las poses.",
     },
   },
   {
     image: editorialMotion,
-    position: "center",
+    position: "center 32%",
+    positionMobile: "center 22%",
     kicker: { en: "Editorial & Movement", es: "Editorial y Movimiento" },
     title: { en: "Made to move.", es: "Hecho para moverse." },
     text: {
       en: "Bold editorial work for dancers, artists, and brands that need images with real energy.",
-      es: "Trabajo editorial audaz para bailarines, artistas y marcas que necesitan imágenes con energía.",
+      es: "Trabajo editorial atrevido para bailarines, artistas y marcas que necesitan imágenes con energía real.",
     },
   },
   {
     image: travelFlamingos,
-    position: "center 58%",
+    position: "center 80%",
+    positionMobile: "center center",
     kicker: { en: "On Location", es: "En Locación" },
     title: { en: "Drawn to the light.", es: "Atraído por la luz." },
     text: {

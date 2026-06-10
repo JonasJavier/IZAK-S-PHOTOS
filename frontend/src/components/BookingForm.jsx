@@ -88,8 +88,8 @@ function BookingForm() {
           <CalendarCheck size={18} strokeWidth={1.7} />
           <p>
             {t({
-              en: "Sessions are usually available Tuesday through Saturday. A 30% retainer secures your date.",
-              es: "Las sesiones suelen estar disponibles de martes a sábado. Un anticipo del 30% asegura tu fecha.",
+              en: "I usually shoot Tuesday through Saturday. A 30% deposit holds your date.",
+              es: "Suelo fotografiar de martes a sábado. Un anticipo del 30% reserva tu fecha.",
             })}
           </p>
         </div>
@@ -173,8 +173,8 @@ function BookingForm() {
         {status === "offline" && (
           <p className="form-status error form-wide">
             {t({
-              en: "Couldn't reach the server. Start the backend, or email hello@izaksphotos.com.",
-              es: "No se pudo contactar el servidor. Inicia el backend o escribe a hello@izaksphotos.com.",
+              en: "Couldn't reach the server. Please try again, or email me at hello@izaksphotos.com.",
+              es: "No pude conectar con el servidor. Vuelve a intentarlo o escríbeme a hello@izaksphotos.com.",
             })}
           </p>
         )}
@@ -188,7 +188,7 @@ function BookingForm() {
         <h2>{isConfirmed ? t({ en: "You're all set.", es: "¡Listo!" }) : t({ en: "Ready when you are.", es: "Cuando quieras." })}</h2>
         <p>
           {isConfirmed
-            ? t({ en: "Your request is saved. I'll reply with availability shortly.", es: "Tu solicitud quedó guardada. Te responderé con disponibilidad pronto." })
+            ? t({ en: "Got it — your request is in. I'll reply with availability very soon.", es: "¡Listo, recibí tu solicitud! Te escribo con la disponibilidad muy pronto." })
             : t({ en: "Choose a package, share a few details, and I'll reply with availability.", es: "Elige un paquete, comparte algunos detalles y te responderé con disponibilidad." })}
         </p>
         <dl>
