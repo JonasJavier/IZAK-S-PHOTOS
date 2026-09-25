@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = ["python311", "nodejs_20"]
+
+[phases.install]
+cmds = [
+  "python -m pip install --upgrade pip",
+  "python -m pip install -r requirements.txt",
+  "npm --prefix frontend ci"
+]
+
+[phases.build]
+cmds = [
+  "npm --prefix frontend run build",
+  "python backend/manage.py collectstatic --noinput"
+]
+
+[start]
+cmd = "python backend/manage.py migrate && gunicorn --chdir backend backend.wsgi:application --bind 0.0.0.0:$PORT"
