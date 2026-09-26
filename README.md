@@ -2,11 +2,15 @@
 
 ### A bilingual photography portfolio with a Django API and a production React experience
 
+[![CI](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml)
+[![Live site](https://img.shields.io/website?url=https%3A%2F%2Fizaksphotos.jonasjavier.dev&label=production)](https://izaksphotos.jonasjavier.dev)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+
 [Live site](https://izaksphotos.jonasjavier.dev) · [Gallery](https://izaksphotos.jonasjavier.dev/projects) · [Reserve a session](https://izaksphotos.jonasjavier.dev/booking)
 
 ![Izak's Photos production homepage](docs/screenshots/home.png)
 
-Izak's Photos is a full-stack portfolio product for portrait, editorial, wedding, and travel photography, built around a fictional photographer. It combines an image-led bilingual interface with a Django REST API for booking inquiries and a single-service Railway deployment.
+Izak's Photos is a full-stack portfolio concept for portrait, editorial, wedding, and travel photography. It combines an image-led bilingual interface with a Django REST API for booking inquiries and a single-service Railway deployment.
 
 ## Product highlights
 
@@ -20,9 +24,9 @@ Izak's Photos is a full-stack portfolio product for portrait, editorial, wedding
 
 ## About this project
 
-Izak is a fictional photographer created for this product. The photographs are my own work. The studio figures, package prices, and client testimonials shown on the site are sample content that demonstrates the product; they do not describe a real business, and the booking form does not reach a real studio.
+Izak and the studio are fictional. Package prices, statistics, and testimonials are sample content used to demonstrate the product; they do not describe a real business. The production booking form validates and stores demo inquiries, so visitors should not submit sensitive or real booking information.
 
-I designed and built the product end to end: the responsive React UI, the bilingual experience, the Django REST integration, deployment, testing, and this documentation.
+This repository is a maintained fork of [JobNacor/IZAK-S-PHOTOS](https://github.com/JobNacor/IZAK-S-PHOTOS) and preserves the original collaboration history. Jonas Javier maintains this production edition and led its full-stack evolution: the responsive React interface, bilingual experience, Django REST integration, Railway deployment, testing, performance work, and technical documentation.
 
 ## Product surfaces
 
@@ -44,6 +48,15 @@ flowchart LR
 ```
 
 The Vite application is compiled for production and served by Django from the same Railway service. This keeps the public deployment single-origin while preserving an independent frontend development workflow.
+
+## API
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health/` | Railway healthcheck and production smoke test |
+| `POST` | `/api/contact/` | Validate, rate-limit, and persist a booking inquiry |
+
+The contact endpoint accepts `name`, `email`, `projectType`, `date`, `location`, and `message`. It returns field-level validation errors with `400`, applies an anonymous request limit, and silently discards honeypot submissions.
 
 ## Technology
 
@@ -68,6 +81,15 @@ IZAK-S-PHOTOS/
 ├── railway.toml          # Railway deployment configuration
 └── package.json          # Root development commands
 ```
+
+## Documentation
+
+| Guide | What it covers |
+| --- | --- |
+| [Deployment](docs/DEPLOYMENT.md) | Railway setup, environment variables, verification, rollback, and troubleshooting |
+| [Contributing](CONTRIBUTING.md) | Development workflow, conventions, and the pull-request checklist |
+| [Security](SECURITY.md) | Supported code, private vulnerability reporting, and secret handling |
+| [License](LICENSE) | GPL-3.0 terms for the source code |
 
 ## Local development
 
@@ -125,7 +147,7 @@ The same checks run automatically on pushes and pull requests through GitHub Act
 
 ## Deployment
 
-The production configuration in `railway.toml` builds the Vite frontend, runs Django migrations and `collectstatic`, and starts Gunicorn behind the `/api/health/` healthcheck.
+The production configuration in `railway.toml` builds the Vite frontend, runs Django migrations and `collectstatic`, and starts Gunicorn behind the `/api/health/` healthcheck. See the [Railway deployment guide](docs/DEPLOYMENT.md) for the complete setup and incident checklist.
 
 Two variables must exist in the Railway service before deploying:
 

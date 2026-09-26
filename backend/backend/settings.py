@@ -181,6 +181,9 @@ if not DEBUG:
     # the internal HTTP healthcheck keeps working.
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 
 REST_FRAMEWORK = {
