@@ -10,12 +10,13 @@ Izak's Photos is a full-stack portfolio for portrait, editorial, wedding, and tr
 
 ## Product highlights
 
-- Editorial homepage with responsive desktop and mobile compositions
-- Filterable photography gallery with a keyboard-accessible lightbox
+- Editorial homepage with a pausable hero slideshow and responsive desktop and mobile compositions
+- Filterable gallery whose category and open photo live in the URL, so every frame has a shareable link
+- Lightbox with keyboard, focus-trap, and swipe support, plus progressive loading from the grid preview
 - English and Spanish interface with persistent language selection
-- Booking workflow with packages, project details, and API-backed inquiries
-- About, services, testimonials, and contact experiences
-- Optimized image assets and production delivery through Django and WhiteNoise
+- Booking workflow with packages, field-level validation, and API-backed inquiries
+- Spam protection on the booking API: per-client rate limit and a honeypot field
+- 720px WebP previews for grids (about 74% lighter than the full-size JPEGs) and production delivery through Django and WhiteNoise
 
 ## My role and collaboration
 
@@ -29,7 +30,7 @@ Jonas Javier maintains this version and led its full-stack evolution: responsive
 | --- | --- |
 | ![Filterable photography gallery](docs/screenshots/gallery.png) | ![Photography session booking workflow](docs/screenshots/booking.png) |
 
-The screenshots above were captured from the production deployment.
+The screenshots above were captured from the production build at 1440 × 1000.
 
 ## Architecture
 
@@ -60,7 +61,7 @@ The Vite application is compiled for production and served by Django from the sa
 IZAK-S-PHOTOS/
 ├── backend/              # Django project and REST API
 ├── frontend/             # React/Vite application and optimized media
-├── scripts/              # Unified local development launcher
+├── scripts/              # Local dev launcher and image preview generator
 ├── docs/screenshots/     # Production product evidence
 ├── .github/workflows/    # Automated backend and frontend checks
 ├── .env.example          # Safe configuration template
@@ -99,8 +100,20 @@ Local services:
 | `DATABASE_URL` | Optional PostgreSQL connection URL |
 | `RAILWAY_PUBLIC_DOMAIN` | Domain supplied by Railway |
 | `VITE_API_URL` | Frontend API base URL for split local development |
+| `CONTACT_RATE_LIMIT` | Booking requests allowed per client (default `10/hour`) |
 
 Real environment files are ignored. Only safe templates belong in Git.
+
+## Photography assets
+
+Full-size JPEGs live in `frontend/src/images/optimized/` and feed the hero and the lightbox. Grids and cards use 720px WebP previews in `frontend/src/images/thumbs/`. After adding or replacing a photo, regenerate the previews and the Open Graph image:
+
+```powershell
+python -m pip install pillow
+python scripts/optimize_images.py
+```
+
+Then add the photo's entry (file name, size, category, and bilingual title) to `frontend/src/data/portfolio.js`.
 
 ## Quality checks
 

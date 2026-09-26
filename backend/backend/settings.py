@@ -166,10 +166,20 @@ CSRF_TRUSTED_ORIGINS = [
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+if not DEBUG:
+    # Production is HTTPS-only behind Railway's proxy. SSL redirects stay off so
+    # the internal HTTP healthcheck keeps working.
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
+        *(["rest_framework.renderers.BrowsableAPIRenderer"] if DEBUG else []),
     ],
+    "DEFAULT_THROTTLE_RATES": {
+        # Booking requests per client IP; generous for people, tight for scripts.
+        "contact": os.getenv("CONTACT_RATE_LIMIT", "10/hour"),
+    },
 }

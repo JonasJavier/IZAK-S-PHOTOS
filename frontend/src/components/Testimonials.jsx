@@ -22,15 +22,15 @@ function Testimonials() {
         <div className="testimonial-grid">
           {testimonials.map((testimonial, i) => (
             <Reveal as="article" className="testimonial-card" key={testimonial.name} delay={i * 90}>
-              <Quote className="testimonial-quote-mark" size={28} strokeWidth={1.4} />
-              <div className="testimonial-stars" aria-label="5 / 5">
+              <Quote className="testimonial-quote-mark" size={28} strokeWidth={1.4} aria-hidden="true" />
+              <div className="testimonial-stars" role="img" aria-label={t({ en: "Rated 5 out of 5", es: "Calificación: 5 de 5" })}>
                 {[0, 1, 2, 3, 4].map((s) => (
                   <Star key={s} size={14} fill="currentColor" strokeWidth={0} />
                 ))}
               </div>
               <blockquote>{t(testimonial.quote)}</blockquote>
               <div className="testimonial-author">
-                <img src={testimonial.image} alt="" />
+                <img src={testimonial.image} alt="" loading="lazy" decoding="async" />
                 <div>
                   <strong>{testimonial.name}</strong>
                   <span>{t(testimonial.project)}</span>

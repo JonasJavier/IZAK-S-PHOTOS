@@ -1,30 +1,37 @@
 import { Globe } from "lucide-react";
 import { useLang } from "../i18n";
 
-/** Always-on-screen language switcher, pinned bottom-right. */
-function LanguageToggle() {
-  const { lang, setLang } = useLang();
+const languages = [
+  { code: "en", label: "EN", name: "English" },
+  { code: "es", label: "ES", name: "Español" },
+];
+
+/** Compact EN/ES switch. Rendered in the header (desktop) and in the mobile menu. */
+function LanguageToggle({ className = "" }) {
+  const { lang, setLang, t } = useLang();
 
   return (
-    <div className="lang-toggle" role="group" aria-label="Select language">
+    <div
+      className={`lang-toggle ${className}`.trim()}
+      role="group"
+      aria-label={t({ en: "Language", es: "Idioma" })}
+    >
       <Globe size={15} strokeWidth={1.8} aria-hidden="true" />
-      <button
-        type="button"
-        className={lang === "en" ? "is-active" : ""}
-        aria-pressed={lang === "en"}
-        onClick={() => setLang("en")}
-      >
-        EN
-      </button>
-      <span className="lang-divider" aria-hidden="true" />
-      <button
-        type="button"
-        className={lang === "es" ? "is-active" : ""}
-        aria-pressed={lang === "es"}
-        onClick={() => setLang("es")}
-      >
-        ES
-      </button>
+      {languages.map((language, i) => (
+        <span className="lang-option" key={language.code}>
+          {i > 0 && <span className="lang-divider" aria-hidden="true" />}
+          <button
+            type="button"
+            lang={language.code}
+            className={lang === language.code ? "is-active" : ""}
+            aria-pressed={lang === language.code}
+            aria-label={language.name}
+            onClick={() => setLang(language.code)}
+          >
+            {language.label}
+          </button>
+        </span>
+      ))}
     </div>
   );
 }
