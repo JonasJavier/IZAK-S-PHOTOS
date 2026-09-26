@@ -6,15 +6,6 @@ from rest_framework.throttling import AnonRateThrottle
 from .serializers import BookingInquirySerializer
 
 
-FEATURED_PHOTOS = [
-    {"id": "stillness", "title": "Stillness", "category": "Portraits"},
-    {"id": "red-motion", "title": "Red Motion", "category": "Editorial"},
-    {"id": "first-dance", "title": "First Dance", "category": "Weddings"},
-    {"id": "under-the-stars", "title": "Under the Stars", "category": "Travel"},
-    {"id": "the-arch", "title": "The Arch", "category": "Weddings"},
-    {"id": "nocturne", "title": "Nocturne", "category": "Editorial"},
-]
-
 RECEIVED_MESSAGE = "Your booking request has been received. I'll reply with availability shortly."
 
 
@@ -27,11 +18,6 @@ class ContactRateThrottle(AnonRateThrottle):
 @api_view(["GET"])
 def health_check(request):
     return Response({"status": "ok", "service": "izaks-photos-api"})
-
-
-@api_view(["GET"])
-def photo_collection(request):
-    return Response({"count": len(FEATURED_PHOTOS), "results": FEATURED_PHOTOS})
 
 
 @api_view(["POST"])

@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 
@@ -24,17 +25,26 @@ def env_list(name: str, default: str) -> list[str]:
     ]
 
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "django-insecure-local-development-key-change-me",
-).strip().strip('"').strip("'")
-
-DEBUG = os.getenv("DJANGO_DEBUG", "true").lower().strip('"').strip("'") in {
+# Debug is off unless explicitly enabled, so a deployment that forgets the
+# variable never serves stack traces.
+DEBUG = os.getenv("DJANGO_DEBUG", "false").lower().strip('"').strip("'") in {
     "1",
     "true",
     "yes",
     "on",
 }
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "").strip().strip('"').strip("'")
+
+if DEBUG:
+    SECRET_KEY = SECRET_KEY or "django-insecure-local-development-key-change-me"
+elif len(SECRET_KEY) < 50 or SECRET_KEY.startswith("django-insecure"):
+    # Refuse to boot in production with a missing, short, or placeholder key.
+    raise ImproperlyConfigured(
+        "DJANGO_SECRET_KEY must be a unique value of at least 50 characters when "
+        "DJANGO_DEBUG is false. Generate one with: python -c "
+        '"from django.core.management.utils import get_random_secret_key as k; print(k())"'
+    )
 
 default_hosts = [
     "localhost",

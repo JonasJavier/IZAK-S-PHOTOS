@@ -33,12 +33,6 @@ class ApiSmokeTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "ok")
 
-    def test_photo_collection(self):
-        response = self.client.get(reverse("api-photos"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 6)
-
     def test_contact_inquiry(self):
         response = self.post_inquiry(VALID_INQUIRY)
 
