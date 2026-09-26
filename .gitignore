@@ -12,7 +12,8 @@ media/
 staticfiles/
 
 # Environments
-.env
+**/.env
+!**/.env.example
 .playwright-cli/
 env/
 .venv/
