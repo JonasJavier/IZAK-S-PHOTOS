@@ -11,3 +11,14 @@ class BookingInquiryAdmin(admin.ModelAdmin):
     search_fields = ("name", "email", "message", "location")
     readonly_fields = ("created_at",)
     date_hierarchy = "created_at"
+    actions = ("mark_handled", "mark_open")
+
+    @admin.action(description="Mark selected inquiries as handled")
+    def mark_handled(self, request, queryset):
+        updated = queryset.update(is_handled=True)
+        self.message_user(request, f"{updated} inquiry(ies) marked as handled.")
+
+    @admin.action(description="Reopen selected inquiries")
+    def mark_open(self, request, queryset):
+        updated = queryset.update(is_handled=False)
+        self.message_user(request, f"{updated} inquiry(ies) reopened.")

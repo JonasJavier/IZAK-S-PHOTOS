@@ -12,8 +12,15 @@ function AboutPage() {
     <>
       {/* Split hero */}
       <section className="about-hero">
-        <Reveal className="about-hero-media" variant="zoom">
-          <img src={about.image} alt={t({ en: "Izak at work with a camera", es: "Izak trabajando con una cámara" })} />
+        <Reveal as="figure" className="about-hero-media" variant="zoom">
+          <img
+            src={about.image}
+            alt={t({ en: "Portrait of a woman with a steady gaze in warm light", es: "Retrato de una mujer de mirada firme en luz cálida" })}
+          />
+          <figcaption>
+            <small>{t({ en: "From the portfolio", es: "Del portafolio" })}</small>
+            {t(about.imageTitle)}
+          </figcaption>
         </Reveal>
         <Reveal className="about-hero-copy" variant="right">
           <span className="section-label">{t({ en: "About", es: "Sobre mí" })}</span>
@@ -47,7 +54,7 @@ function AboutPage() {
         </Reveal>
         <Reveal className="about-quote" variant="right" delay={120}>
           <blockquote>&ldquo;{t(about.quote)}&rdquo;</blockquote>
-          <img src={about.portrait} alt="" loading="lazy" />
+          <img src={about.portrait} alt="" loading="lazy" decoding="async" />
           <span className="about-signature">{about.signature}</span>
         </Reveal>
       </section>
@@ -68,13 +75,15 @@ function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="section-shell about-stats">
-        {studioStats.map((stat, i) => (
-          <Reveal as="article" className="stat" key={stat.value} delay={i * 70}>
-            <strong>{stat.value}</strong>
-            <span>{t(stat.label)}</span>
-          </Reveal>
-        ))}
+      <section className="section-shell about-stats-section" aria-label={t({ en: "Studio in numbers", es: "El estudio en cifras" })}>
+        <div className="about-stats">
+          {studioStats.map((stat, i) => (
+            <Reveal as="article" className="stat" key={stat.value} delay={i * 70}>
+              <strong>{stat.value}</strong>
+              <span>{t(stat.label)}</span>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
       {/* Process */}

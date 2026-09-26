@@ -1,50 +1,18 @@
-// Optimized, web-ready photography (built via scripts/optimize_images.py)
-import aboutPhotographer from "../images/optimized/about-photographer.jpg";
-import heroPortrait from "../images/optimized/hero-portrait.jpg";
-import editorialCrimson from "../images/optimized/editorial-crimson.jpg";
-import editorialExposure from "../images/optimized/editorial-exposure.jpg";
-import editorialMotion from "../images/optimized/editorial-motion.jpg";
-import editorialNocturne from "../images/optimized/editorial-nocturne.jpg";
-import editorialRecord from "../images/optimized/editorial-record.jpg";
-import editorialFrequency from "../images/optimized/editorial-frequency.jpg";
-import editorialNewsprint from "../images/optimized/editorial-newsprint.jpg";
-import editorialMadeInSpain from "../images/optimized/editorial-made-in-spain.jpg";
-import editorialMirror from "../images/optimized/editorial-mirror.jpg";
-import editorialCoverStory from "../images/optimized/editorial-cover-story.jpg";
-import editorialSwimLight from "../images/optimized/editorial-swim-light.jpg";
-import portraitCity from "../images/optimized/portrait-city.jpg";
-import portraitEmber from "../images/optimized/portrait-ember.jpg";
-import portraitFreckles from "../images/optimized/portrait-freckles.jpg";
-import portraitLean from "../images/optimized/portrait-lean.jpg";
-import portraitMarket from "../images/optimized/portrait-market.jpg";
-import portraitRedlight from "../images/optimized/portrait-redlight.jpg";
-import portraitShade from "../images/optimized/portrait-shade.jpg";
-import portraitSoftGaze from "../images/optimized/portrait-soft-gaze.jpg";
-import portraitSparks from "../images/optimized/portrait-sparks.jpg";
-import portraitStillness from "../images/optimized/portrait-stillness.jpg";
-import portraitSunflowers from "../images/optimized/portrait-sunflowers.jpg";
-import portraitWinterGaze from "../images/optimized/portrait-winter-gaze.jpg";
-import travelBloom from "../images/optimized/travel-bloom.jpg";
-import travelBlackSand from "../images/optimized/travel-black-sand.jpg";
-import travelCrowd from "../images/optimized/travel-crowd.jpg";
-import travelFestival from "../images/optimized/travel-festival.jpg";
-import travelFlamingos from "../images/optimized/travel-flamingos.jpg";
-import travelHighlands from "../images/optimized/travel-highlands.jpg";
-import travelHillside from "../images/optimized/travel-hillside.jpg";
-import travelQuarter from "../images/optimized/travel-quarter.jpg";
-import travelRomeStreet from "../images/optimized/travel-rome-street.jpg";
-import travelSong from "../images/optimized/travel-song.jpg";
-import travelStars from "../images/optimized/travel-stars.jpg";
-import travelWaterfall from "../images/optimized/travel-waterfall.jpg";
-import weddingArch from "../images/optimized/wedding-arch.jpg";
-import weddingBouquet from "../images/optimized/wedding-bouquet.jpg";
-import weddingFirelight from "../images/optimized/wedding-firelight.jpg";
-import weddingFirstDance from "../images/optimized/wedding-firstdance.jpg";
-import weddingGolden from "../images/optimized/wedding-golden.jpg";
-import weddingJoy from "../images/optimized/wedding-joy.jpg";
-import weddingSunlitWalk from "../images/optimized/wedding-sunlit-walk.jpg";
-import weddingVeil from "../images/optimized/wedding-veil.jpg";
-import weddingVows from "../images/optimized/wedding-vows.jpg";
+// Photography lives in src/images: full-size JPEGs in optimized/ (lightbox, hero)
+// and 720px WebP previews in thumbs/ (grids and cards). After adding or replacing
+// a photo, regenerate the previews with `python scripts/optimize_images.py`.
+const fullSize = import.meta.glob("../images/optimized/*.jpg", { eager: true, import: "default" });
+const previews = import.meta.glob("../images/thumbs/*.webp", { eager: true, import: "default" });
+
+function image(file) {
+  const src = fullSize[`../images/optimized/${file}.jpg`];
+  if (!src) throw new Error(`Missing photo: src/images/optimized/${file}.jpg`);
+  return src;
+}
+
+function preview(file) {
+  return previews[`../images/thumbs/${file}.webp`] ?? image(file);
+}
 
 // Header nav (Booking lives in the prominent "Reserve" button instead).
 export const navItems = [
@@ -55,77 +23,74 @@ export const navItems = [
 
 export const reserveLabel = { en: "Reserve", es: "Reservar" };
 
+// `key` is the stable value stored on each photo; `slug` is what the URL shows.
 export const categories = [
-  { key: "All", label: { en: "All", es: "Todo" } },
-  { key: "Portraits", label: { en: "Portraits", es: "Retratos" } },
-  { key: "Editorial", label: { en: "Editorial", es: "Editorial" } },
-  { key: "Weddings", label: { en: "Weddings", es: "Bodas" } },
-  { key: "Travel", label: { en: "Travel", es: "Viajes" } },
+  { key: "All", slug: "all", label: { en: "All", es: "Todo" } },
+  { key: "Portraits", slug: "portraits", label: { en: "Portraits", es: "Retratos" } },
+  { key: "Editorial", slug: "editorial", label: { en: "Editorial", es: "Editorial" } },
+  { key: "Weddings", slug: "weddings", label: { en: "Weddings", es: "Bodas" } },
+  { key: "Travel", slug: "travel", label: { en: "Travel", es: "Viajes" } },
 ];
 
 // Full gallery. w/h reserve layout space (no shift). category is a stable key.
-export const photos = [
-  { id: "stillness", src: portraitStillness, w: 925, h: 1700, category: "Portraits", title: { en: "Stillness", es: "Quietud" }, location: { en: "Studio · B&W", es: "Estudio · B&N" } },
-  { id: "soft-gaze", src: portraitSoftGaze, w: 735, h: 894, category: "Portraits", title: { en: "Soft Gaze", es: "Mirada Suave" }, location: { en: "Natural Light", es: "Luz Natural" } },
-  { id: "freckles", src: portraitFreckles, w: 700, h: 1083, category: "Portraits", title: { en: "Freckles", es: "Pecas" }, location: { en: "Close Portrait", es: "Retrato Cercano" } },
-  { id: "ember", src: portraitEmber, w: 736, h: 1103, category: "Portraits", title: { en: "Ember", es: "Brasa" }, location: { en: "Low Light", es: "Poca Luz" } },
-  { id: "sparks", src: portraitSparks, w: 1133, h: 1700, category: "Portraits", title: { en: "Sparks", es: "Chispas" }, location: { en: "Winter Market", es: "Mercado de Invierno" } },
-  { id: "sunflowers", src: portraitSunflowers, w: 1133, h: 1700, category: "Portraits", title: { en: "Sunflowers", es: "Girasoles" }, location: { en: "Open Field", es: "Campo Abierto" } },
-  { id: "redlight", src: portraitRedlight, w: 954, h: 1700, category: "Portraits", title: { en: "Redlight", es: "Luz Roja" }, location: { en: "Blue Hour", es: "Hora Azul" } },
-  { id: "winter-gaze", src: portraitWinterGaze, w: 957, h: 1700, category: "Portraits", title: { en: "Winter Gaze", es: "Mirada Invernal" }, location: { en: "Outdoor", es: "Exterior" } },
-  { id: "city-walk", src: portraitCity, w: 956, h: 1700, category: "Portraits", title: { en: "City Walk", es: "Caminata Urbana" }, location: { en: "Santo Domingo", es: "Santo Domingo" } },
-  { id: "market-color", src: portraitMarket, w: 986, h: 1700, category: "Portraits", title: { en: "Market Color", es: "Color de Mercado" }, location: { en: "Street Portrait", es: "Retrato de Calle" } },
-  { id: "shade", src: portraitShade, w: 884, h: 1700, category: "Portraits", title: { en: "Shade", es: "Sombra" }, location: { en: "Old Town", es: "Ciudad Vieja" } },
-  { id: "lean", src: portraitLean, w: 880, h: 1700, category: "Portraits", title: { en: "Lean", es: "Reposo" }, location: { en: "Side Street", es: "Callejón" } },
+const gallery = [
+  { id: "stillness", file: "portrait-stillness", w: 925, h: 1700, category: "Portraits", title: { en: "Stillness", es: "Quietud" }, location: { en: "Studio · B&W", es: "Estudio · B&N" } },
+  { id: "soft-gaze", file: "portrait-soft-gaze", w: 735, h: 894, category: "Portraits", title: { en: "Soft Gaze", es: "Mirada Suave" }, location: { en: "Natural Light", es: "Luz Natural" } },
+  { id: "freckles", file: "portrait-freckles", w: 700, h: 1083, category: "Portraits", title: { en: "Freckles", es: "Pecas" }, location: { en: "Close Portrait", es: "Retrato Cercano" } },
+  { id: "ember", file: "portrait-ember", w: 736, h: 1103, category: "Portraits", title: { en: "Ember", es: "Brasa" }, location: { en: "Low Light", es: "Poca Luz" } },
+  { id: "sparks", file: "portrait-sparks", w: 1133, h: 1700, category: "Portraits", title: { en: "Sparks", es: "Chispas" }, location: { en: "Winter Market", es: "Mercado de Invierno" } },
+  { id: "sunflowers", file: "portrait-sunflowers", w: 1133, h: 1700, category: "Portraits", title: { en: "Sunflowers", es: "Girasoles" }, location: { en: "Open Field", es: "Campo Abierto" } },
+  { id: "redlight", file: "portrait-redlight", w: 954, h: 1700, category: "Portraits", title: { en: "Redlight", es: "Luz Roja" }, location: { en: "Blue Hour", es: "Hora Azul" } },
+  { id: "winter-gaze", file: "portrait-winter-gaze", w: 957, h: 1700, category: "Portraits", title: { en: "Winter Gaze", es: "Mirada Invernal" }, location: { en: "Outdoor", es: "Exterior" } },
+  { id: "city-walk", file: "portrait-city", w: 956, h: 1700, category: "Portraits", title: { en: "City Walk", es: "Caminata Urbana" }, location: { en: "Santo Domingo", es: "Santo Domingo" } },
+  { id: "market-color", file: "portrait-market", w: 986, h: 1700, category: "Portraits", title: { en: "Market Color", es: "Color de Mercado" }, location: { en: "Street Portrait", es: "Retrato de Calle" } },
+  { id: "shade", file: "portrait-shade", w: 884, h: 1700, category: "Portraits", title: { en: "Shade", es: "Sombra" }, location: { en: "Old Town", es: "Ciudad Vieja" } },
+  { id: "lean", file: "portrait-lean", w: 880, h: 1700, category: "Portraits", title: { en: "Lean", es: "Reposo" }, location: { en: "Side Street", es: "Callejón" } },
 
-  { id: "red-motion", src: editorialMotion, w: 1133, h: 1700, category: "Editorial", title: { en: "Red Motion", es: "Movimiento Rojo" }, location: { en: "Dance Studio", es: "Estudio de Danza" } },
-  { id: "crimson", src: editorialCrimson, w: 1133, h: 1700, category: "Editorial", title: { en: "Crimson", es: "Carmesí" }, location: { en: "Café Editorial", es: "Editorial de Café" } },
-  { id: "nocturne", src: editorialNocturne, w: 1133, h: 1700, category: "Editorial", title: { en: "Nocturne", es: "Nocturno" }, location: { en: "Evening Set", es: "Set Nocturno" } },
-  { id: "off-the-record", src: editorialRecord, w: 1133, h: 1700, category: "Editorial", title: { en: "Off the Record", es: "Fuera de Registro" }, location: { en: "Studio Set", es: "Set de Estudio" } },
-  { id: "exposure", src: editorialExposure, w: 1360, h: 1700, category: "Editorial", title: { en: "Exposure", es: "Exposición" }, location: { en: "Campaign", es: "Campaña" } },
-  { id: "frequency", src: editorialFrequency, w: 1133, h: 1700, category: "Editorial", title: { en: "Frequency", es: "Frecuencia" }, location: { en: "Studio Set", es: "Set de Estudio" } },
-  { id: "newsprint", src: editorialNewsprint, w: 1133, h: 1700, category: "Editorial", title: { en: "Newsprint", es: "Papel Prensa" }, location: { en: "City Steps", es: "Escaleras Urbanas" } },
-  { id: "made-in-spain", src: editorialMadeInSpain, w: 1360, h: 1700, category: "Editorial", title: { en: "Made in Spain", es: "Made in Spain" }, location: { en: "Studio", es: "Estudio" } },
-  { id: "mirror-study", src: editorialMirror, w: 1126, h: 1700, category: "Editorial", title: { en: "Mirror Study", es: "Estudio de Espejo" }, location: { en: "B&W", es: "B&N" } },
-  { id: "cover-story", src: editorialCoverStory, w: 1133, h: 1700, category: "Editorial", title: { en: "Cover Story", es: "Historia de Portada" }, location: { en: "Product Editorial", es: "Editorial de Producto" } },
-  { id: "swim-light", src: editorialSwimLight, w: 956, h: 1700, category: "Editorial", title: { en: "Swim Light", es: "Luz Sumergida" }, location: { en: "Water Study", es: "Estudio en Agua" } },
+  { id: "red-motion", file: "editorial-motion", w: 1133, h: 1700, category: "Editorial", title: { en: "Red Motion", es: "Movimiento Rojo" }, location: { en: "Dance Studio", es: "Estudio de Danza" } },
+  { id: "nocturne", file: "editorial-nocturne", w: 1133, h: 1700, category: "Editorial", title: { en: "Nocturne", es: "Nocturno" }, location: { en: "Evening Set", es: "Set Nocturno" } },
+  { id: "off-the-record", file: "editorial-record", w: 1133, h: 1700, category: "Editorial", title: { en: "Off the Record", es: "Fuera de Registro" }, location: { en: "Studio Set", es: "Set de Estudio" } },
+  { id: "exposure", file: "editorial-exposure", w: 1360, h: 1700, category: "Editorial", title: { en: "Exposure", es: "Exposición" }, location: { en: "Campaign", es: "Campaña" } },
+  { id: "frequency", file: "editorial-frequency", w: 1133, h: 1700, category: "Editorial", title: { en: "Frequency", es: "Frecuencia" }, location: { en: "Studio Set", es: "Set de Estudio" } },
+  { id: "newsprint", file: "editorial-newsprint", w: 1133, h: 1700, category: "Editorial", title: { en: "Newsprint", es: "Papel Prensa" }, location: { en: "City Steps", es: "Escaleras Urbanas" } },
+  { id: "made-in-spain", file: "editorial-made-in-spain", w: 1360, h: 1700, category: "Editorial", title: { en: "Made in Spain", es: "Made in Spain" }, location: { en: "Studio", es: "Estudio" } },
+  { id: "mirror-study", file: "editorial-mirror", w: 1126, h: 1700, category: "Editorial", title: { en: "Mirror Study", es: "Estudio de Espejo" }, location: { en: "B&W", es: "B&N" } },
+  { id: "swim-light", file: "editorial-swim-light", w: 956, h: 1700, category: "Editorial", title: { en: "Swim Light", es: "Luz Sumergida" }, location: { en: "Water Study", es: "Estudio en Agua" } },
 
-  { id: "first-dance", src: weddingFirstDance, w: 1133, h: 1700, category: "Weddings", title: { en: "First Dance", es: "Primer Baile" }, location: { en: "Evening Reception", es: "Recepción Nocturna" } },
-  { id: "the-arch", src: weddingArch, w: 1700, h: 1133, category: "Weddings", title: { en: "The Arch", es: "El Arco" }, location: { en: "Garden Ceremony", es: "Ceremonia en Jardín" } },
-  { id: "golden-hour", src: weddingGolden, w: 1133, h: 1700, category: "Weddings", title: { en: "Golden Hour", es: "Hora Dorada" }, location: { en: "Reception", es: "Recepción" } },
-  { id: "the-veil", src: weddingVeil, w: 1133, h: 1700, category: "Weddings", title: { en: "The Veil", es: "El Velo" }, location: { en: "Ceremony · B&W", es: "Ceremonia · B&N" } },
-  { id: "just-married", src: weddingJoy, w: 1133, h: 1700, category: "Weddings", title: { en: "Just Married", es: "Recién Casados" }, location: { en: "Outdoor", es: "Al Aire Libre" } },
-  { id: "vows", src: weddingVows, w: 1133, h: 1700, category: "Weddings", title: { en: "Vows", es: "Votos" }, location: { en: "Indoor Ceremony", es: "Ceremonia Interior" } },
-  { id: "sunlit-walk", src: weddingSunlitWalk, w: 1700, h: 1133, category: "Weddings", title: { en: "Sunlit Walk", es: "Camino de Sol" }, location: { en: "Vineyard", es: "Viñedo" } },
-  { id: "firelight", src: weddingFirelight, w: 1700, h: 1133, category: "Weddings", title: { en: "Firelight", es: "Luz de Fuego" }, location: { en: "Night Portrait", es: "Retrato Nocturno" } },
-  { id: "bouquet", src: weddingBouquet, w: 1133, h: 1700, category: "Weddings", title: { en: "Bouquet", es: "Ramo" }, location: { en: "Details", es: "Detalles" } },
+  { id: "first-dance", file: "wedding-firstdance", w: 1133, h: 1700, category: "Weddings", title: { en: "First Dance", es: "Primer Baile" }, location: { en: "Evening Reception", es: "Recepción Nocturna" } },
+  { id: "the-arch", file: "wedding-arch", w: 1700, h: 1133, category: "Weddings", title: { en: "The Arch", es: "El Arco" }, location: { en: "Garden Ceremony", es: "Ceremonia en Jardín" } },
+  { id: "golden-hour", file: "wedding-golden", w: 1133, h: 1700, category: "Weddings", title: { en: "Golden Hour", es: "Hora Dorada" }, location: { en: "Reception", es: "Recepción" } },
+  { id: "the-veil", file: "wedding-veil", w: 1133, h: 1700, category: "Weddings", title: { en: "The Veil", es: "El Velo" }, location: { en: "Ceremony · B&W", es: "Ceremonia · B&N" } },
+  { id: "just-married", file: "wedding-joy", w: 1133, h: 1700, category: "Weddings", title: { en: "Just Married", es: "Recién Casados" }, location: { en: "Outdoor", es: "Al Aire Libre" } },
+  { id: "vows", file: "wedding-vows", w: 1133, h: 1700, category: "Weddings", title: { en: "Vows", es: "Votos" }, location: { en: "Indoor Ceremony", es: "Ceremonia Interior" } },
+  { id: "sunlit-walk", file: "wedding-sunlit-walk", w: 1700, h: 1133, category: "Weddings", title: { en: "Sunlit Walk", es: "Camino de Sol" }, location: { en: "Vineyard", es: "Viñedo" } },
+  { id: "firelight", file: "wedding-firelight", w: 1700, h: 1133, category: "Weddings", title: { en: "Firelight", es: "Luz de Fuego" }, location: { en: "Night Portrait", es: "Retrato Nocturno" } },
+  { id: "bouquet", file: "wedding-bouquet", w: 1133, h: 1700, category: "Weddings", title: { en: "Bouquet", es: "Ramo" }, location: { en: "Details", es: "Detalles" } },
 
-  { id: "under-the-stars", src: travelStars, w: 957, h: 1700, category: "Travel", title: { en: "Under the Stars", es: "Bajo las Estrellas" }, location: { en: "Open Country", es: "Campo Abierto" } },
-  { id: "flamingo-coast", src: travelFlamingos, w: 955, h: 1700, category: "Travel", title: { en: "Flamingo Coast", es: "Costa de Flamencos" }, location: { en: "Seaside", es: "Junto al Mar" } },
-  { id: "old-quarter", src: travelQuarter, w: 957, h: 1700, category: "Travel", title: { en: "Old Quarter", es: "Barrio Antiguo" }, location: { en: "Europe", es: "Europa" } },
-  { id: "festival-night", src: travelFestival, w: 1700, h: 1133, category: "Travel", title: { en: "Festival Night", es: "Noche de Festival" }, location: { en: "City Center", es: "Centro de la Ciudad" } },
-  { id: "street-song", src: travelSong, w: 1133, h: 1700, category: "Travel", title: { en: "Street Song", es: "Canción de Calle" }, location: { en: "B&W", es: "B&N" } },
-  { id: "bloom", src: travelBloom, w: 1700, h: 1281, category: "Travel", title: { en: "Bloom", es: "Floración" }, location: { en: "Spring", es: "Primavera" } },
-  { id: "crowd", src: travelCrowd, w: 1700, h: 1133, category: "Travel", title: { en: "Crowd", es: "Multitud" }, location: { en: "Street Festival", es: "Festival Callejero" } },
-  { id: "highlands", src: travelHighlands, w: 1700, h: 1133, category: "Travel", title: { en: "Highlands", es: "Tierras Altas" }, location: { en: "Mountain Air", es: "Aire de Montaña" } },
-  { id: "hillside", src: travelHillside, w: 1133, h: 1700, category: "Travel", title: { en: "Hillside", es: "Ladera" }, location: { en: "Golden Terrain", es: "Terreno Dorado" } },
-  { id: "waterfall", src: travelWaterfall, w: 1360, h: 1700, category: "Travel", title: { en: "Waterfall", es: "Cascada" }, location: { en: "Cavern Light", es: "Luz de Caverna" } },
-  { id: "rome-street", src: travelRomeStreet, w: 1127, h: 1700, category: "Travel", title: { en: "Rome Street", es: "Calle de Roma" }, location: { en: "Old City", es: "Ciudad Antigua" } },
-  { id: "black-sand", src: travelBlackSand, w: 1133, h: 1700, category: "Travel", title: { en: "Black Sand", es: "Arena Negra" }, location: { en: "Coast · B&W", es: "Costa · B&N" } },
+  { id: "under-the-stars", file: "travel-stars", w: 957, h: 1700, category: "Travel", title: { en: "Under the Stars", es: "Bajo las Estrellas" }, location: { en: "Open Country", es: "Campo Abierto" } },
+  { id: "flamingo-coast", file: "travel-flamingos", w: 955, h: 1700, category: "Travel", title: { en: "Flamingo Coast", es: "Costa de Flamencos" }, location: { en: "Seaside", es: "Junto al Mar" } },
+  { id: "old-quarter", file: "travel-quarter", w: 957, h: 1700, category: "Travel", title: { en: "Old Quarter", es: "Barrio Antiguo" }, location: { en: "Europe", es: "Europa" } },
+  { id: "festival-night", file: "travel-festival", w: 1700, h: 1133, category: "Travel", title: { en: "Festival Night", es: "Noche de Festival" }, location: { en: "City Center", es: "Centro de la Ciudad" } },
+  { id: "street-song", file: "travel-song", w: 1133, h: 1700, category: "Travel", title: { en: "Street Song", es: "Canción de Calle" }, location: { en: "B&W", es: "B&N" } },
+  { id: "bloom", file: "travel-bloom", w: 1700, h: 1281, category: "Travel", title: { en: "Bloom", es: "Floración" }, location: { en: "Spring", es: "Primavera" } },
+  { id: "crowd", file: "travel-crowd", w: 1700, h: 1133, category: "Travel", title: { en: "Crowd", es: "Multitud" }, location: { en: "Street Festival", es: "Festival Callejero" } },
+  { id: "highlands", file: "travel-highlands", w: 1700, h: 1133, category: "Travel", title: { en: "Highlands", es: "Tierras Altas" }, location: { en: "Mountain Air", es: "Aire de Montaña" } },
+  { id: "hillside", file: "travel-hillside", w: 1133, h: 1700, category: "Travel", title: { en: "Hillside", es: "Ladera" }, location: { en: "Golden Terrain", es: "Terreno Dorado" } },
+  { id: "moonrise", file: "travel-moonrise", w: 1360, h: 1700, category: "Travel", title: { en: "Moonrise", es: "Salida de la Luna" }, location: { en: "Evening Sky", es: "Cielo al Atardecer" } },
+  { id: "rome-street", file: "travel-rome-street", w: 1127, h: 1700, category: "Travel", title: { en: "Rome Street", es: "Calle de Roma" }, location: { en: "Old City", es: "Ciudad Antigua" } },
+  { id: "black-sand", file: "travel-black-sand", w: 1133, h: 1700, category: "Travel", title: { en: "Black Sand", es: "Arena Negra" }, location: { en: "Coast · B&W", es: "Costa · B&N" } },
 ];
+
+export const photos = gallery.map((photo) => ({ ...photo, src: image(photo.file), thumb: preview(photo.file) }));
+
+const photoById = (id) => photos.find((photo) => photo.id === id);
 
 // Curated subset for the homepage editorial showcase (first item is the lead).
-export const featured = [
-  photos.find((p) => p.id === "red-motion"),
-  photos.find((p) => p.id === "first-dance"),
-  photos.find((p) => p.id === "stillness"),
-  photos.find((p) => p.id === "under-the-stars"),
-  photos.find((p) => p.id === "the-arch"),
-];
+export const featured = ["red-motion", "first-dance", "stillness", "under-the-stars", "the-arch"].map(photoById);
 
 export const heroSlides = [
   {
-    image: heroPortrait,
+    image: image("hero-portrait"),
     position: "center center",
     positionMobile: "72% center",
     kicker: { en: "Portraiture", es: "Retrato" },
@@ -136,7 +101,7 @@ export const heroSlides = [
     },
   },
   {
-    image: weddingFirstDance,
+    image: image("wedding-firstdance"),
     position: "center 42%",
     positionMobile: "center 30%",
     kicker: { en: "Weddings & Elopements", es: "Bodas y Elopements" },
@@ -147,7 +112,7 @@ export const heroSlides = [
     },
   },
   {
-    image: editorialMotion,
+    image: image("editorial-motion"),
     position: "center 32%",
     positionMobile: "center 22%",
     kicker: { en: "Editorial & Movement", es: "Editorial y Movimiento" },
@@ -158,7 +123,7 @@ export const heroSlides = [
     },
   },
   {
-    image: travelFlamingos,
+    image: image("travel-flamingos"),
     position: "center 80%",
     positionMobile: "center center",
     kicker: { en: "On Location", es: "En Locación" },
@@ -181,7 +146,7 @@ export const services = [
   {
     number: "01",
     price: "$650",
-    image: portraitSparks,
+    image: preview("portrait-sparks"),
     duration: { en: "2 hours", es: "2 horas" },
     title: { en: "Portrait Session", es: "Sesión de Retrato" },
     summary: {
@@ -196,7 +161,7 @@ export const services = [
   {
     number: "02",
     price: "$1,250",
-    image: editorialExposure,
+    image: preview("editorial-exposure"),
     duration: { en: "Half day", es: "Medio día" },
     title: { en: "Brand Editorial", es: "Editorial de Marca" },
     summary: {
@@ -211,7 +176,7 @@ export const services = [
   {
     number: "03",
     price: "$1,800",
-    image: weddingArch,
+    image: preview("wedding-arch"),
     duration: { en: "Full day", es: "Día completo" },
     title: { en: "Wedding & Events", es: "Bodas y Eventos" },
     summary: {
@@ -263,7 +228,7 @@ export const processSteps = [
 export const testimonials = [
   {
     name: "Maya L.",
-    image: portraitSparks,
+    image: preview("portrait-sparks"),
     project: { en: "Portrait Session", es: "Sesión de Retrato" },
     quote: {
       en: "Izak made the whole experience feel easy and genuine. The photos are more beautiful than I imagined.",
@@ -272,7 +237,7 @@ export const testimonials = [
   },
   {
     name: "Amanda & James",
-    image: weddingFirstDance,
+    image: preview("wedding-firstdance"),
     project: { en: "Wedding Day", es: "Día de Boda" },
     quote: {
       en: "He caught the exact feeling of the evening. Nothing felt staged, but every image looks intentional.",
@@ -281,7 +246,7 @@ export const testimonials = [
   },
   {
     name: "Elena R.",
-    image: editorialCrimson,
+    image: preview("editorial-frequency"),
     project: { en: "Brand Editorial", es: "Editorial de Marca" },
     quote: {
       en: "The final gallery gave my brand the confidence and refinement I was missing.",
@@ -291,8 +256,10 @@ export const testimonials = [
 ];
 
 export const about = {
-  image: aboutPhotographer,
-  portrait: editorialCrimson,
+  // A frame from the portfolio (not a photo of Izak); the caption says so.
+  image: image("portrait-winter-gaze"),
+  imageTitle: { en: "Winter Gaze", es: "Mirada Invernal" },
+  portrait: preview("editorial-nocturne"),
   signature: "Izak",
   lede: {
     en: "I photograph people, brands, and places with a quiet, intentional approach — less posing, more presence.",
@@ -303,8 +270,8 @@ export const about = {
     es: "El trabajo se construye sobre luz natural, conexión honesta y una edición cuidada. Sea un retrato personal, una campaña de marca, un día de boda o una toma encontrada al otro lado del mundo, la meta es la misma: imágenes que se sienten compuestas sin sentirse fabricadas.",
   },
   intro: {
-    en: "I started photographing to slow time down — to keep the gestures, light, and small in-between moments that pass too quickly to notice. A decade later, that is still the whole job.",
-    es: "Empecé a fotografiar para frenar el tiempo: conservar los gestos, la luz y los pequeños momentos intermedios que pasan demasiado rápido. Una década después, ese sigue siendo todo el trabajo.",
+    en: "I started photographing to slow time down — to keep the gestures, light, and small in-between moments that pass too quickly to notice. Years later, that is still the whole job.",
+    es: "Empecé a fotografiar para frenar el tiempo: conservar los gestos, la luz y los pequeños momentos intermedios que pasan demasiado rápido. Años después, ese sigue siendo todo el trabajo.",
   },
   location: {
     en: "Based in Santo Domingo, Dominican Republic. Available for selected travel projects worldwide.",

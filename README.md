@@ -2,26 +2,31 @@
 
 ### A bilingual photography portfolio with a Django API and a production React experience
 
+[![CI](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml)
+[![Live site](https://img.shields.io/website?url=https%3A%2F%2Fizaksphotos.jonasjavier.dev&label=production)](https://izaksphotos.jonasjavier.dev)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+
 [Live site](https://izaksphotos.jonasjavier.dev) · [Gallery](https://izaksphotos.jonasjavier.dev/projects) · [Reserve a session](https://izaksphotos.jonasjavier.dev/booking)
 
 ![Izak's Photos production homepage](docs/screenshots/home.png)
 
-Izak's Photos is a full-stack portfolio for portrait, editorial, wedding, and travel photography. The product combines an image-led bilingual interface with a Django REST API for booking inquiries and a single-service Railway deployment.
+Izak's Photos is a full-stack portfolio concept for portrait, editorial, wedding, and travel photography. It combines an image-led bilingual interface with a Django REST API for booking inquiries and a single-service Railway deployment.
 
 ## Product highlights
 
-- Editorial homepage with responsive desktop and mobile compositions
-- Filterable photography gallery with a keyboard-accessible lightbox
+- Editorial homepage with a pausable hero slideshow and responsive desktop and mobile compositions
+- Filterable gallery whose category and open photo live in the URL, so every frame has a shareable link
+- Lightbox with keyboard, focus-trap, and swipe support, plus progressive loading from the grid preview
 - English and Spanish interface with persistent language selection
-- Booking workflow with packages, project details, and API-backed inquiries
-- About, services, testimonials, and contact experiences
-- Optimized image assets and production delivery through Django and WhiteNoise
+- Booking workflow with packages, field-level validation, and API-backed inquiries
+- Spam protection on the booking API: per-client rate limit and a honeypot field
+- 720px WebP previews for grids (about 74% lighter than the full-size JPEGs) and production delivery through Django and WhiteNoise
 
-## My role and collaboration
+## About this project
 
-This repository is a fork of [JobNacor/IZAK-S-PHOTOS](https://github.com/JobNacor/IZAK-S-PHOTOS) and preserves attribution to the original collaboration.
+Izak and the studio are fictional. Package prices, statistics, and testimonials are sample content used to demonstrate the product; they do not describe a real business. The production booking form validates and stores demo inquiries, so visitors should not submit sensitive or real booking information.
 
-Jonas Javier maintains this version and led its full-stack evolution: responsive React UI, bilingual product experience, Django REST integration, deployment preparation, testing, and technical documentation.
+This repository is a maintained fork of [JobNacor/IZAK-S-PHOTOS](https://github.com/JobNacor/IZAK-S-PHOTOS) and preserves the original collaboration history. Jonas Javier maintains this production edition and led its full-stack evolution: the responsive React interface, bilingual experience, Django REST integration, Railway deployment, testing, performance work, and technical documentation.
 
 ## Product surfaces
 
@@ -29,7 +34,7 @@ Jonas Javier maintains this version and led its full-stack evolution: responsive
 | --- | --- |
 | ![Filterable photography gallery](docs/screenshots/gallery.png) | ![Photography session booking workflow](docs/screenshots/booking.png) |
 
-The screenshots above were captured from the production deployment.
+The screenshots above were captured from the production build at 1440 × 1000.
 
 ## Architecture
 
@@ -44,6 +49,15 @@ flowchart LR
 
 The Vite application is compiled for production and served by Django from the same Railway service. This keeps the public deployment single-origin while preserving an independent frontend development workflow.
 
+## API
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health/` | Railway healthcheck and production smoke test |
+| `POST` | `/api/contact/` | Validate, rate-limit, and persist a booking inquiry |
+
+The contact endpoint accepts `name`, `email`, `projectType`, `date`, `location`, and `message`. It returns field-level validation errors with `400`, applies an anonymous request limit, and silently discards honeypot submissions.
+
 ## Technology
 
 | Area | Stack |
@@ -51,7 +65,7 @@ The Vite application is compiled for production and served by Django from the sa
 | Backend | Python · Django · Django REST Framework |
 | Frontend | React · Vite · React Router · JavaScript |
 | Data | SQLite locally · PostgreSQL through `DATABASE_URL` |
-| Delivery | Gunicorn · WhiteNoise · Railway · Nixpacks |
+| Delivery | Gunicorn · WhiteNoise · Railway (Railpack) |
 | Quality | Django tests · frontend production build · GitHub Actions |
 
 ## Project structure
@@ -60,14 +74,22 @@ The Vite application is compiled for production and served by Django from the sa
 IZAK-S-PHOTOS/
 ├── backend/              # Django project and REST API
 ├── frontend/             # React/Vite application and optimized media
-├── scripts/              # Unified local development launcher
+├── scripts/              # Local dev launcher and image preview generator
 ├── docs/screenshots/     # Production product evidence
 ├── .github/workflows/    # Automated backend and frontend checks
 ├── .env.example          # Safe configuration template
-├── nixpacks.toml         # Railway build configuration
 ├── railway.toml          # Railway deployment configuration
 └── package.json          # Root development commands
 ```
+
+## Documentation
+
+| Guide | What it covers |
+| --- | --- |
+| [Deployment](docs/DEPLOYMENT.md) | Railway setup, environment variables, verification, rollback, and troubleshooting |
+| [Contributing](CONTRIBUTING.md) | Development workflow, conventions, and the pull-request checklist |
+| [Security](SECURITY.md) | Supported code, private vulnerability reporting, and secret handling |
+| [License](LICENSE) | GPL-3.0 terms for the source code |
 
 ## Local development
 
@@ -92,15 +114,27 @@ Local services:
 
 | Variable | Purpose |
 | --- | --- |
-| `DJANGO_SECRET_KEY` | Django signing key; always replace outside local development |
-| `DJANGO_DEBUG` | Enables or disables debug mode |
+| `DJANGO_SECRET_KEY` | Django signing key; production refuses to start unless it is set to a unique value of 50+ characters |
+| `DJANGO_DEBUG` | Enables debug mode; off by default, set to `true` only locally |
 | `DJANGO_ALLOWED_HOSTS` | Comma-separated accepted hosts |
 | `DJANGO_CORS_ALLOWED_ORIGINS` | Comma-separated frontend origins |
-| `DATABASE_URL` | Optional PostgreSQL connection URL |
+| `DATABASE_URL` | PostgreSQL connection URL; required in production so inquiries persist |
 | `RAILWAY_PUBLIC_DOMAIN` | Domain supplied by Railway |
 | `VITE_API_URL` | Frontend API base URL for split local development |
+| `CONTACT_RATE_LIMIT` | Booking requests allowed per client (default `10/hour`) |
 
 Real environment files are ignored. Only safe templates belong in Git.
+
+## Photography assets
+
+Full-size JPEGs live in `frontend/src/images/optimized/` and feed the hero and the lightbox. Grids and cards use 720px WebP previews in `frontend/src/images/thumbs/`. After adding or replacing a photo, regenerate the previews and the Open Graph image:
+
+```powershell
+python -m pip install pillow
+python scripts/optimize_images.py
+```
+
+Then add the photo's entry (file name, size, category, and bilingual title) to `frontend/src/data/portfolio.js`.
 
 ## Quality checks
 
@@ -113,7 +147,14 @@ The same checks run automatically on pushes and pull requests through GitHub Act
 
 ## Deployment
 
-The production configuration builds the Vite frontend, runs Django migrations and `collectstatic`, and starts Gunicorn. Secrets and database credentials must be configured in Railway rather than committed to the repository.
+The production configuration in `railway.toml` builds the Vite frontend, runs Django migrations and `collectstatic`, and starts Gunicorn behind the `/api/health/` healthcheck. See the [Railway deployment guide](docs/DEPLOYMENT.md) for the complete setup and incident checklist.
+
+Two variables must exist in the Railway service before deploying:
+
+- `DJANGO_SECRET_KEY`: a unique key of at least 50 characters. Django refuses to start in production with a missing, short, or placeholder key.
+- `DATABASE_URL`: attach a Railway PostgreSQL database and reference its URL. Without it Django falls back to SQLite on the container's disk, which is wiped on every deploy, so booking inquiries would be lost.
+
+Secrets and database credentials belong in Railway, never in the repository.
 
 ## License and media rights
 

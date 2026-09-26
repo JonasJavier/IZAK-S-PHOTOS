@@ -1,40 +1,60 @@
 import { useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
-import LanguageToggle from "./components/LanguageToggle";
 import Navbar from "./components/Navbar";
-import { LanguageProvider } from "./i18n";
+import { LanguageProvider, useLang } from "./i18n";
 import AboutPage from "./pages/AboutPage";
 import BookingPage from "./pages/BookingPage";
 import HomePage from "./pages/HomePage";
+import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 
-function ScrollToTop() {
+const SITE_NAME = "Izak's Photos";
+
+const pageTitles = {
+  "/": { en: "Portrait, Wedding & Editorial Photography", es: "Fotografía de Retrato, Bodas y Editorial" },
+  "/projects": { en: "Gallery", es: "Galería" },
+  "/about": { en: "About", es: "Sobre mí" },
+  "/booking": { en: "Reserve a Session", es: "Reserva una Sesión" },
+};
+
+/** Scrolls to the top on page changes and keeps the tab title in sync. */
+function RouteEffects() {
   const { pathname } = useLocation();
+  const { t } = useLang();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname]);
 
+  useEffect(() => {
+    const title = pageTitles[pathname] ?? { en: "Page not found", es: "Página no encontrada" };
+    document.title = `${t(title)} — ${SITE_NAME}`;
+  }, [pathname, t]);
+
   return null;
 }
 
 function AppShell() {
+  const { t } = useLang();
+
   return (
     <>
-      <ScrollToTop />
+      <a className="skip-link" href="#main">
+        {t({ en: "Skip to content", es: "Saltar al contenido" })}
+      </a>
+      <RouteEffects />
       <Navbar />
-      <main>
+      <main id="main" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/booking" element={<BookingPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />
-      <LanguageToggle />
     </>
   );
 }
@@ -42,7 +62,7 @@ function AppShell() {
 function App() {
   return (
     <LanguageProvider>
-      <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+      <BrowserRouter>
         <AppShell />
       </BrowserRouter>
     </LanguageProvider>

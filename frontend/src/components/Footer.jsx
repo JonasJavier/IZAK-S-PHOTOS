@@ -1,4 +1,4 @@
-import { Instagram, Mail, MapPin } from "lucide-react";
+import { ArrowRight, CalendarCheck, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
 import { navItems, reserveLabel } from "../data/portfolio";
@@ -31,18 +31,18 @@ function Footer() {
       </nav>
 
       <div className="footer-contact">
-        <a href="mailto:hello@izaksphotos.com">
-          <Mail size={16} strokeWidth={1.7} />
-          hello@izaksphotos.com
-        </a>
         <span>
-          <MapPin size={16} strokeWidth={1.7} />
-          {t({ en: "Santo Domingo, DR", es: "Santo Domingo, RD" })}
+          <MapPin size={16} strokeWidth={1.7} aria-hidden="true" />
+          {t({ en: "Santo Domingo, DR · Available worldwide", es: "Santo Domingo, RD · Disponible en todo el mundo" })}
         </span>
-        <a href="https://instagram.com" target="_blank" rel="noreferrer">
-          <Instagram size={16} strokeWidth={1.7} />
-          Instagram
-        </a>
+        <span>
+          <CalendarCheck size={16} strokeWidth={1.7} aria-hidden="true" />
+          {t({ en: "Replies to every inquiry personally", es: "Respondo cada solicitud personalmente" })}
+        </span>
+        <Link className="text-link" to="/booking">
+          {t({ en: "Send an inquiry", es: "Enviar una solicitud" })}
+          <ArrowRight size={15} strokeWidth={1.8} />
+        </Link>
       </div>
 
       <p className="footer-rights">© {new Date().getFullYear()} Izak&apos;s Photos.</p>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useLang } from "../i18n";
 import { navItems, reserveLabel } from "../data/portfolio";
+import LanguageToggle from "./LanguageToggle";
 
 function Navbar() {
   const { t } = useLang();
@@ -10,7 +11,14 @@ function Navbar() {
 
   useEffect(() => {
     document.body.classList.toggle("menu-open", menuOpen);
-    return () => document.body.classList.remove("menu-open");
+    if (!menuOpen) return () => document.body.classList.remove("menu-open");
+
+    const onKey = (event) => event.key === "Escape" && setMenuOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.classList.remove("menu-open");
+      window.removeEventListener("keydown", onKey);
+    };
   }, [menuOpen]);
 
   const closeMenu = () => setMenuOpen(false);
@@ -22,7 +30,7 @@ function Navbar() {
         <span>Izak&apos;s Photos</span>
       </NavLink>
 
-      <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} aria-label="Primary">
+      <nav id="site-nav" className={`site-nav ${menuOpen ? "is-open" : ""}`} aria-label="Primary">
         {navItems.map((item) => (
           <NavLink
             end={item.path === "/"}
@@ -34,11 +42,14 @@ function Navbar() {
             {t(item.label)}
           </NavLink>
         ))}
-        {/* Shown only inside the mobile overlay (desktop uses .header-cta) */}
+        {/* Shown only inside the mobile overlay (desktop uses .header-cta and .header-lang) */}
         <NavLink className="nav-reserve" to="/booking" onClick={closeMenu}>
           {t(reserveLabel)}
         </NavLink>
+        <LanguageToggle className="nav-lang" />
       </nav>
+
+      <LanguageToggle className="header-lang" />
 
       <NavLink className="header-cta" to="/booking" onClick={closeMenu}>
         {t(reserveLabel)}
@@ -47,8 +58,9 @@ function Navbar() {
       <button
         className="menu-button"
         type="button"
-        aria-label={menuOpen ? "Close menu" : "Open menu"}
+        aria-label={menuOpen ? t({ en: "Close menu", es: "Cerrar menú" }) : t({ en: "Open menu", es: "Abrir menú" })}
         aria-expanded={menuOpen}
+        aria-controls="site-nav"
         onClick={() => setMenuOpen((current) => !current)}
       >
         {menuOpen ? <X size={22} strokeWidth={1.8} /> : <Menu size={22} strokeWidth={1.8} />}

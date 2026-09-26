@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class BookingInquiry(models.Model):
@@ -21,4 +22,6 @@ class BookingInquiry(models.Model):
         verbose_name_plural = "Booking inquiries"
 
     def __str__(self):
-        return f"{self.name} — {self.project_type or 'Inquiry'} ({self.created_at:%Y-%m-%d})"
+        # Local time, so the title matches the "Created at" shown by the admin.
+        created = timezone.localtime(self.created_at) if self.created_at else None
+        return f"{self.name} — {self.project_type or 'Inquiry'}" + (f" ({created:%Y-%m-%d})" if created else "")

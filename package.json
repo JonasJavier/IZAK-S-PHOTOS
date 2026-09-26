@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "description": "Django and React photography portfolio.",
+  "license": "GPL-3.0-only",
+  "homepage": "https://izaksphotos.jonasjavier.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonasJavier/IZAK-S-PHOTOS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JonasJavier/IZAK-S-PHOTOS/issues"
+  },
   "scripts": {
     "dev": "python scripts/dev.py",
     "backend": "python backend/manage.py runserver 127.0.0.1:8000",

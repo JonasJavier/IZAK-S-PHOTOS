@@ -9,35 +9,39 @@ const labelFor = (key, t) => {
   return c ? t(c.label) : key;
 };
 
+function FeaturedCard({ photo, lead = false }) {
+  const { t } = useLang();
+
+  return (
+    <Link
+      to={`/projects?photo=${photo.id}`}
+      className={`featured-card ${lead ? "featured-card-lead" : ""}`.trim()}
+      aria-label={`${t(photo.title)} — ${labelFor(photo.category, t)}. ${t({ en: "Open in the gallery", es: "Abrir en la galería" })}`}
+    >
+      <img src={lead ? photo.src : photo.thumb} alt={t(photo.title)} loading="lazy" decoding="async" />
+      <span className="featured-meta" aria-hidden="true">
+        <small>{labelFor(photo.category, t)}</small>
+        <strong>{t(photo.title)}</strong>
+        <ArrowUpRight size={lead ? 18 : 16} strokeWidth={1.7} />
+      </span>
+    </Link>
+  );
+}
+
 /** Asymmetric editorial showcase for the homepage — a lead frame plus a stack. */
 function FeaturedWork() {
-  const { t } = useLang();
   const [lead, ...rest] = featured;
 
   return (
     <div className="featured">
       <Reveal className="featured-lead" variant="zoom">
-        <Link to="/projects" className="featured-card featured-card-lead" aria-label={t(lead.title)}>
-          <img src={lead.src} alt={t(lead.title)} loading="lazy" />
-          <span className="featured-meta">
-            <small>{labelFor(lead.category, t)}</small>
-            <strong>{t(lead.title)}</strong>
-            <ArrowUpRight size={18} strokeWidth={1.7} />
-          </span>
-        </Link>
+        <FeaturedCard photo={lead} lead />
       </Reveal>
 
       <div className="featured-stack">
         {rest.map((photo, i) => (
           <Reveal key={photo.id} delay={i * 80}>
-            <Link to="/projects" className="featured-card" aria-label={t(photo.title)}>
-              <img src={photo.src} alt={t(photo.title)} loading="lazy" />
-              <span className="featured-meta">
-                <small>{labelFor(photo.category, t)}</small>
-                <strong>{t(photo.title)}</strong>
-                <ArrowUpRight size={16} strokeWidth={1.7} />
-              </span>
-            </Link>
+            <FeaturedCard photo={photo} />
           </Reveal>
         ))}
       </div>

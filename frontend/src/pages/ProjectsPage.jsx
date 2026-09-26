@@ -13,8 +13,8 @@ function ProjectsPage() {
           <h1>{t({ en: "A living archive of light, people, and places.", es: "Un archivo vivo de luz, personas y lugares." })}</h1>
           <p>
             {t({
-              en: "Filter by portraits, editorial, weddings, or travel — then open any frame into a focused, full-screen viewer. Use the arrow keys to move through the set.",
-              es: "Filtra por retratos, editorial, bodas o viajes, y abre cualquier imagen en un visor a pantalla completa. Usa las flechas del teclado para navegar.",
+              en: "Filter by portraits, editorial, weddings, or travel — then open any frame into a focused, full-screen viewer. Move through the set with the arrow keys, or swipe on a phone.",
+              es: "Filtra por retratos, editorial, bodas o viajes, y abre cualquier imagen en un visor a pantalla completa. Recorre la serie con las flechas del teclado o deslizando en el móvil.",
             })}
           </p>
         </Reveal>
