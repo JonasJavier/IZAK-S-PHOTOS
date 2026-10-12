@@ -1,65 +1,54 @@
-# Railway deployment guide
+# Netlify deployment guide
 
-This project deploys the React/Vite frontend and Django API as one Railway service, with a separate Railway PostgreSQL service for persistent booking inquiries.
-
-## Production topology
+This project deploys to Netlify as a static React/Vite site plus a Netlify Function that handles booking inquiries. No database server or secrets are required in production.
 
 ```mermaid
 flowchart LR
-    Browser -->|HTTPS| Railway[Railway edge]
-    Railway --> Web[Gunicorn + Django]
-    Web --> Static[WhiteNoise + Vite build]
-    Web --> API[Django REST API]
-    API --> Postgres[(Railway PostgreSQL)]
+    Browser -->|HTTPS| CDN[Netlify CDN]
+    CDN --> SPA[frontend/dist]
+    CDN -->|/api/contact/| Contact[contact.mjs Function]
+    CDN -->|/api/health/| Health[health.mjs Function]
+    Contact --> Blobs[(Netlify Blobs: booking-inquiries)]
 ```
 
-The web service deploys from the repository's `main` branch. Railway reads `railway.toml` from the repository root.
+The site deploys from the repository's `main` branch. Netlify reads `netlify.toml` from the repository root.
 
-## Required services and variables
+## What `netlify.toml` does
 
-Create a Railway project with:
+1. Installs and builds the frontend: `npm --prefix frontend ci && npm --prefix frontend run build`.
+2. Sets `VITE_BASE=/` so assets load from the site root (the Django build uses `/static/`).
+3. Sets `VITE_API_URL=/api` so the booking form calls the same-origin function, even if a local `frontend/.env` exists.
+4. Publishes `frontend/dist`.
+5. Redirects legacy `/static/*` URLs (such as the Open Graph image) to the root with a 301.
+6. Falls back to `index.html` for client-side routes like `/projects` and `/booking`.
+7. Caches hashed files under `/assets/` for one year.
 
-1. A GitHub-backed service for this repository.
-2. A PostgreSQL service connected to the web service.
-3. A custom domain, or a generated Railway domain, for the web service.
+The root `package.json` declares `@netlify/blobs`, which Netlify installs automatically and bundles into the functions in `netlify/functions/`.
 
-Configure these service variables without exposing their values in commits, issues, screenshots, or logs:
+## Booking API
 
-| Variable | Required value |
+`netlify/functions/contact.mjs` mirrors the Django `contact_inquiry` view:
+
+| Case | Response |
 | --- | --- |
-| `DJANGO_SECRET_KEY` | Unique random value with at least 50 characters |
-| `DJANGO_DEBUG` | `false` |
-| `DATABASE_URL` | Reference to the PostgreSQL service URL |
-| `DJANGO_ALLOWED_HOSTS` | Comma-separated public hosts; do not include schemes |
-| `DJANGO_CORS_ALLOWED_ORIGINS` | Comma-separated HTTPS origins |
-| `RAILWAY_PUBLIC_DOMAIN` | Supplied automatically by Railway when a public domain exists |
-| `CONTACT_RATE_LIMIT` | Optional DRF rate, for example `10/hour` |
+| Valid inquiry | `201` with `status`, `message`, `id`, and `inquiry`; stored in the `booking-inquiries` Blobs store |
+| Missing name, invalid email, or a field over its length limit | `400` with field `errors` |
+| Hidden `website` honeypot filled | `201`, nothing stored |
+| More than 5 requests per minute from one IP | `429` (Netlify rate limiting) |
 
-Generate a Django key locally with:
+Stored inquiries can be browsed in the Netlify UI under **Blobs**, or with the CLI:
 
-```powershell
-python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```bash
+npx netlify-cli blobs:list booking-inquiries
 ```
 
-Store the result only in Railway. Production intentionally refuses to start with a missing, short, or `django-insecure` key.
+## Custom domain
 
-## Build and release lifecycle
+The DNS for `jonasjavier.dev` is managed at name.com. To serve the site at `izaksphotos.jonasjavier.dev`:
 
-Railway executes the commands declared in `railway.toml`:
-
-1. Install Python dependencies.
-2. Install the locked frontend dependencies with `npm ci`.
-3. Build the Vite application.
-4. Collect Django static files.
-5. Run database migrations as the pre-deploy command.
-6. Start Gunicorn on Railway's `$PORT`.
-7. Probe `/api/health/` before promoting the deployment.
-
-The healthcheck must return:
-
-```json
-{"status":"ok","service":"izaks-photos-api"}
-```
+1. In Netlify, open **Domain management → Add a domain** and enter `izaksphotos.jonasjavier.dev`.
+2. At name.com, set the `izaksphotos` CNAME record to `izaksphotos.netlify.app`.
+3. Wait for DNS to propagate; Netlify issues the HTTPS certificate automatically.
 
 ## Pre-deploy checklist
 
@@ -76,18 +65,18 @@ npm --prefix frontend run build
 Confirm that:
 
 - The working tree contains no secrets or local database files.
-- Import paths match file-name casing exactly; Railway builds on Linux.
-- New Django model changes include migrations.
+- Import paths match file-name casing exactly; Netlify builds on Linux.
+- Changes to the booking contract are made in both `backend/api/` and `netlify/functions/contact.mjs`.
 - The production build loads `/`, `/projects`, `/booking`, and `/about` directly.
 - The GitHub Actions workflow is green.
 
 ## Production verification
 
-After Railway reports a successful deployment, verify both the UI and the API:
+After Netlify reports a successful deploy, verify both the UI and the API:
 
 ```powershell
-Invoke-WebRequest https://izaksphotos.jonasjavier.dev/ -UseBasicParsing
-Invoke-RestMethod https://izaksphotos.jonasjavier.dev/api/health/
+Invoke-WebRequest https://izaksphotos.netlify.app/ -UseBasicParsing
+Invoke-RestMethod https://izaksphotos.netlify.app/api/health/
 ```
 
 Then check the browser at desktop and mobile widths, including a direct gallery URL and the booking form's client-side validation. Do not submit real personal information to this demonstration project.
@@ -96,20 +85,20 @@ Then check the browser at desktop and mobile widths, including a direct gallery 
 
 ### Vite reports `UNRESOLVED_IMPORT`
 
-Check capitalization first. Windows resolves `Footer` and `footer` as the same path, but Railway's Linux builder does not. Rename the file and import so their casing is identical, commit the rename, and run the frontend build again.
+Check capitalization first. Windows resolves `Footer` and `footer` as the same path, but Netlify's Linux builder does not. Rename the file and import so their casing is identical, commit the rename, and run the frontend build again.
 
-### Django refuses to boot
+### Assets return 404 or the page is blank
 
-Read the first configuration exception in the deploy logs. The most common cause is a missing or invalid `DJANGO_SECRET_KEY`. Never work around this guard by adding a fallback production secret to the repository.
+Confirm that the built `index.html` references `/assets/...`, not `/static/assets/...`. If it does not, `VITE_BASE` was not applied; check the `[build.environment]` block in `netlify.toml`.
 
-### Healthcheck fails while the build succeeds
+### The booking form reports a network error
 
-Open the deployment logs and confirm that Gunicorn bound to `0.0.0.0:$PORT`. Check migrations, `DJANGO_ALLOWED_HOSTS`, the database reference, and `/api/health/` before increasing the healthcheck timeout. Django intentionally leaves `SECURE_SSL_REDIRECT` off because Railway's edge terminates HTTPS and the internal healthcheck uses HTTP; production responses still set secure cookies, security headers, and HSTS.
+Open `/api/health/` on the deployed site. If it does not return JSON, check the **Functions** tab and the deploy log to confirm `contact` and `health` were bundled.
 
-### Static assets return 404
+### Deploys are skipped
 
-Confirm that the Vite build completed, `collectstatic` ran, and `frontend/dist` existed during collection. The production Vite base is `/static/`, and WhiteNoise serves the collected files.
+A deploy marked "Skipped due to account credit usage exceeded" means the Netlify team has used its plan's credits. Wait for the credit reset or change plans; the code is not at fault.
 
 ## Rollback
 
-If a new deployment is unhealthy, keep the last known-good deployment active and use Railway's deployment history to redeploy that version. Fix the issue in a new commit; do not edit generated build artifacts or commit credentials as an emergency workaround.
+If a new deploy misbehaves, open **Deploys** in Netlify, select the last known-good deploy, and choose **Publish deploy**. Fix the issue in a new commit; do not edit generated build artifacts or commit credentials as an emergency workaround.

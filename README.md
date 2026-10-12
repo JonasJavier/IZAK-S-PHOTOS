@@ -5,7 +5,7 @@
 **A bilingual, editorial-style photography portfolio built with Django REST Framework and React.**
 
 [![CI](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml)
-[![Live site](https://img.shields.io/website?url=https%3A%2F%2Fizaksphotos.jonasjavier.dev&label=Live%20Site)](https://izaksphotos.jonasjavier.dev)
+[![Live site](https://img.shields.io/website?url=https%3A%2F%2Fizaksphotos.netlify.app&label=Live%20Site)](https://izaksphotos.netlify.app)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -15,7 +15,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-[View the live site](https://izaksphotos.jonasjavier.dev) · [Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [API](#-api-reference) · [Deployment](#-deployment)
+[View the live site](https://izaksphotos.netlify.app) · [Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [API](#-api-reference) · [Deployment](#-deployment)
 
 ![Izak's Photos production homepage](docs/screenshots/home.png)
 
@@ -23,21 +23,21 @@
 
 ## 🌐 Live Demo
 
-The portfolio is deployed on Railway and publicly available at:
+The portfolio is deployed on Netlify and publicly available at:
 
-### 👉 https://izaksphotos.jonasjavier.dev
+### 👉 https://izaksphotos.netlify.app
 
 Browse the homepage, filter the gallery by category, open any photo in the lightbox, switch between English and Spanish, and send a booking request directly from the site.
 
 ## 📖 Overview
 
-Izak's Photos is a full-stack portfolio concept for portrait, editorial, wedding, and travel photography. It combines an image-led bilingual React interface with a Django REST API for booking inquiries, deployed as a single Railway service.
+Izak's Photos is a full-stack portfolio concept for portrait, editorial, wedding, and travel photography. It combines an image-led bilingual React interface with a booking API. In production the site is served by Netlify, with the booking endpoint running as a Netlify Function; the Django REST API powers local development and the test suite.
 
 The repository is organized as a monorepo so the API and the client can be installed and run together from the project root with a single command.
 
 > **About the content.** Izak and the studio are fictional. Package prices, statistics, and testimonials are sample content used to demonstrate the product; they do not describe a real business. The production booking form validates and stores demo inquiries, so visitors should not submit sensitive or real booking information.
 
-This repository is a maintained fork of [JobNacor/IZAK-S-PHOTOS](https://github.com/JobNacor/IZAK-S-PHOTOS) and preserves the original collaboration history. Jonas Javier maintains this production edition and led its full-stack evolution: the responsive React interface, bilingual experience, Django REST integration, Railway deployment, testing, performance work, and technical documentation.
+This repository is a maintained fork of [JobNacor/IZAK-S-PHOTOS](https://github.com/JobNacor/IZAK-S-PHOTOS) and preserves the original collaboration history. Jonas Javier maintains this production edition and led its full-stack evolution: the responsive React interface, bilingual experience, Django REST integration, Netlify deployment, testing, performance work, and technical documentation.
 
 ## ✨ Features
 
@@ -47,10 +47,10 @@ This repository is a maintained fork of [JobNacor/IZAK-S-PHOTOS](https://github.
 | **Filterable gallery** | Filter by category (Portraits, Editorial, Weddings, Travel). The active category and open photo live in the URL, so every frame has a shareable link. |
 | **Lightbox** | Keyboard navigation, focus trap, swipe support, and progressive loading from the grid preview. |
 | **Bilingual interface** | English and Spanish with persistent language selection. |
-| **Booking flow** | Package selection and a booking form wired to the Django REST contact endpoint with field-level validation. |
+| **Booking flow** | Package selection and a booking form wired to the `/api/contact/` endpoint with field-level validation. |
 | **Spam protection** | Per-client rate limit and a honeypot field on the booking API. |
 | **Client-side routing** | Clean URLs (`/`, `/projects`, `/about`, `/booking`) with scroll-to-top and a dedicated not-found page. |
-| **Performance** | 720px WebP previews for grids (about 74% lighter than the full-size JPEGs) and production delivery through Django and WhiteNoise. |
+| **Performance** | 720px WebP previews for grids (about 74% lighter than the full-size JPEGs) and long-lived caching of hashed assets on Netlify's CDN. |
 | **Developer experience** | One-command launcher that starts Django and Vite together and shuts both down on Ctrl+C. |
 
 ### Product surfaces
@@ -65,14 +65,15 @@ The screenshots above were captured from the production build at 1440 × 1000.
 
 ```mermaid
 flowchart LR
-    USER[Visitor] --> UI[React + Vite]
-    UI --> API[Django REST API]
+    USER[Visitor] --> CDN[Netlify CDN]
+    CDN --> UI[React + Vite build]
+    UI --> FN[Netlify Function /api/contact/]
+    FN --> BLOBS[(Netlify Blobs)]
+    DEV[Local dev] --> API[Django REST API]
     API --> DB[(SQLite / PostgreSQL)]
-    DJANGO[Django + WhiteNoise] --> UI
-    RAILWAY[Railway service] --> DJANGO
 ```
 
-The Vite application is compiled for production and served by Django from the same Railway service. This keeps the public deployment single-origin while preserving an independent frontend development workflow.
+In production Netlify serves the compiled Vite application from its CDN, and `netlify/functions/contact.mjs` answers `/api/contact/` on the same origin with the same contract as the Django view (201, 400, 429, honeypot), storing inquiries in Netlify Blobs. Locally, `npm run dev` still runs the Django API next to Vite.
 
 ## 🛠 Tech Stack
 
@@ -103,7 +104,7 @@ The Vite application is compiled for production and served by Django from the sa
 
 | Area | Tooling |
 | --- | --- |
-| Hosting | Railway (Railpack builder), configured in `railway.toml` |
+| Hosting | Netlify (static site + Functions + Blobs), configured in `netlify.toml` |
 | Checks | Django tests, migration check, frontend production build |
 | Automation | GitHub Actions on every push to `main` and every pull request |
 
@@ -127,11 +128,12 @@ IZAK-S-PHOTOS/
 │   ├── dev.py                # Unified launcher for backend + frontend
 │   └── optimize_images.py    # Generates WebP previews and the Open Graph image
 ├── docs/
-│   ├── DEPLOYMENT.md         # Railway deployment guide
+│   ├── DEPLOYMENT.md         # Netlify deployment guide
 │   └── screenshots/          # Production product evidence
 ├── .github/workflows/        # CI: backend tests and frontend build
 ├── .env.example              # Backend environment template
-├── railway.toml              # Railway build, deploy, and healthcheck configuration
+├── netlify/functions/        # Production API: booking (contact.mjs) and health check
+├── netlify.toml              # Netlify build, redirects, and headers
 ├── requirements.txt          # Python dependencies
 ├── package.json              # Root convenience scripts
 ├── CONTRIBUTING.md           # Development workflow and pull-request checklist
@@ -240,7 +242,7 @@ All endpoints are served under `/api/` and return JSON. Every other path is hand
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| `GET` | `/api/health/` | Service health check, also used by the Railway healthcheck |
+| `GET` | `/api/health/` | Service health check |
 | `POST` | `/api/contact/` | Validate, rate-limit, and persist a booking inquiry |
 
 ### Example: submit a booking inquiry
@@ -290,7 +292,6 @@ curl -X POST http://127.0.0.1:8000/api/contact/ \
 | `DJANGO_ALLOWED_HOSTS` | `.env` | `localhost,127.0.0.1` | Comma-separated list of accepted hostnames |
 | `DJANGO_CORS_ALLOWED_ORIGINS` | `.env` | `http://localhost:5173,http://127.0.0.1:5173` | Comma-separated frontend origins allowed to call the API |
 | `DATABASE_URL` | `.env` | empty (SQLite) | PostgreSQL connection URL. Required in production so inquiries persist. |
-| `RAILWAY_PUBLIC_DOMAIN` | Railway | empty | Domain supplied by Railway; added to the allowed hosts automatically |
 | `CONTACT_RATE_LIMIT` | `.env` | `10/hour` | Booking requests allowed per client |
 | `VITE_API_URL` | `frontend/.env` | `http://127.0.0.1:8000/api` | API base URL used by the frontend during split local development |
 
@@ -320,20 +321,13 @@ The same checks, plus a migration consistency check, run automatically on pushes
 
 ## 📦 Deployment
 
-The production configuration in `railway.toml` builds the Vite frontend, runs Django migrations and `collectstatic`, and starts Gunicorn behind the `/api/health/` healthcheck. See the [Railway deployment guide](docs/DEPLOYMENT.md) for the complete setup, verification, rollback, and troubleshooting checklist.
-
-Two variables must exist in the Railway service before deploying:
-
-- `DJANGO_SECRET_KEY`: a unique key of at least 50 characters. Django refuses to start in production with a missing, short, or placeholder key.
-- `DATABASE_URL`: attach a Railway PostgreSQL database and reference its URL. Without it Django falls back to SQLite on the container's disk, which is wiped on every deploy, so booking inquiries would be lost.
-
-Secrets and database credentials belong in Railway, never in the repository.
+The site deploys to Netlify from the `main` branch. `netlify.toml` builds the Vite frontend with `VITE_BASE=/` and `VITE_API_URL=/api`, publishes `frontend/dist`, redirects old `/static/*` URLs, and falls back to `index.html` for client-side routes. The booking API runs as a Netlify Function and stores inquiries in Netlify Blobs, so no database or secrets are required. See the [Netlify deployment guide](docs/DEPLOYMENT.md) for setup, verification, and troubleshooting.
 
 ## 📚 Documentation
 
 | Guide | What it covers |
 | --- | --- |
-| [Deployment](docs/DEPLOYMENT.md) | Railway setup, environment variables, verification, rollback, and troubleshooting |
+| [Deployment](docs/DEPLOYMENT.md) | Netlify setup, custom domain, verification, rollback, and troubleshooting |
 | [Contributing](CONTRIBUTING.md) | Development workflow, conventions, and the pull-request checklist |
 | [Security](SECURITY.md) | Supported code, private vulnerability reporting, and secret handling |
 | [License](LICENSE) | GPL-3.0 terms for the source code |
@@ -362,7 +356,7 @@ Photography, model likenesses, and other visual assets may carry separate owners
 
 <div align="center">
 
-### 🌐 Visit [izaksphotos.jonasjavier.dev](https://izaksphotos.jonasjavier.dev)
+### 🌐 Visit [izaksphotos.jonasjavier.dev](https://izaksphotos.netlify.app)
 
 If you like this project, consider giving it a ⭐ on GitHub.
 
