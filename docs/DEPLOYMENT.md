@@ -44,10 +44,10 @@ npx netlify-cli blobs:list booking-inquiries
 
 ## Custom domain
 
-The DNS for `jonasjavier.dev` is managed at name.com. To serve the site at `izaksphotos.jonasjavier.dev`:
+`jonasjavier.dev` is a Railway-purchased domain, so its DNS records are managed at railway.com/workspace/domains. The site is served at `izaksphotos.jonasjavier.dev` with this setup:
 
 1. In Netlify, open **Domain management → Add a domain** and enter `izaksphotos.jonasjavier.dev`.
-2. At name.com, set the `izaksphotos` CNAME record to `izaksphotos.netlify.app`.
+2. In Railway, add the TXT record Netlify asks for (`subdomain-owner-verification`) and set the `izaksphotos` CNAME record to `izaksphotos.netlify.app`.
 3. Wait for DNS to propagate; Netlify issues the HTTPS certificate automatically.
 
 ## Pre-deploy checklist
@@ -75,8 +75,8 @@ Confirm that:
 After Netlify reports a successful deploy, verify both the UI and the API:
 
 ```powershell
-Invoke-WebRequest https://izaksphotos.netlify.app/ -UseBasicParsing
-Invoke-RestMethod https://izaksphotos.netlify.app/api/health/
+Invoke-WebRequest https://izaksphotos.jonasjavier.dev/ -UseBasicParsing
+Invoke-RestMethod https://izaksphotos.jonasjavier.dev/api/health/
 ```
 
 Then check the browser at desktop and mobile widths, including a direct gallery URL and the booking form's client-side validation. Do not submit real personal information to this demonstration project.

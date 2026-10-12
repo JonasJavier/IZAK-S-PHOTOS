@@ -5,7 +5,7 @@
 **A bilingual, editorial-style photography portfolio built with Django REST Framework and React.**
 
 [![CI](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JonasJavier/IZAK-S-PHOTOS/actions/workflows/ci.yml)
-[![Live site](https://img.shields.io/website?url=https%3A%2F%2Fizaksphotos.netlify.app&label=Live%20Site)](https://izaksphotos.netlify.app)
+[![Live site](https://img.shields.io/website?url=https%3A%2F%2Fizaksphotos.jonasjavier.dev&label=Live%20Site)](https://izaksphotos.jonasjavier.dev)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -15,7 +15,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-[View the live site](https://izaksphotos.netlify.app) · [Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [API](#-api-reference) · [Deployment](#-deployment)
+[View the live site](https://izaksphotos.jonasjavier.dev) · [Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [API](#-api-reference) · [Deployment](#-deployment)
 
 ![Izak's Photos production homepage](docs/screenshots/home.png)
 
@@ -25,7 +25,7 @@
 
 The portfolio is deployed on Netlify and publicly available at:
 
-### 👉 https://izaksphotos.netlify.app
+### 👉 https://izaksphotos.jonasjavier.dev
 
 Browse the homepage, filter the gallery by category, open any photo in the lightbox, switch between English and Spanish, and send a booking request directly from the site.
 
@@ -356,7 +356,7 @@ Photography, model likenesses, and other visual assets may carry separate owners
 
 <div align="center">
 
-### 🌐 Visit [izaksphotos.jonasjavier.dev](https://izaksphotos.netlify.app)
+### 🌐 Visit [izaksphotos.jonasjavier.dev](https://izaksphotos.jonasjavier.dev)
 
 If you like this project, consider giving it a ⭐ on GitHub.
 
